@@ -1,151 +1,57 @@
-import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
 import pandas as pd
-import math
-from pathlib import Path
 
-# Set the title and favicon that appear in the Browser's tab bar.
-st.set_page_config(
-    page_title='GDP dashboard',
-    page_icon=':earth_americas:', # This is an emoji shortcode. Could be a URL too.
-)
+# Fungsi untuk menghitung regresi linier dan R^2
+def hitung_r2(x, y):
+    x = x.reshape(-1, 1)
+    model = LinearRegression().fit(x, y)
+    y_pred = model.predict(x)
+    return r2_score(y, y_pred), model.coef_[0], model.intercept_
 
-# -----------------------------------------------------------------------------
-# Declare some useful functions.
+# Fungsi utama
+def tentukan_orde_reaksi(data_t, data_A):
+    t = np.array(data_t)
+    A = np.array(data_A)
+    
+    orde0 = A
+    orde1 = np.log(A)
+    orde2 = 1 / A
 
-@st.cache_data
-def get_gdp_data():
-    """Grab GDP data from a CSV file.
+    r2_0, m0, c0 = hitung_r2(t, orde0)
+    r2_1, m1, c1 = hitung_r2(t, orde1)
+    r2_2, m2, c2 = hitung_r2(t, orde2)
 
-    This uses caching to avoid having to read the file every time. If we were
-    reading from an HTTP endpoint instead of a file, it's a good idea to set
-    a maximum age to the cache with the TTL argument: @st.cache_data(ttl='1d')
-    """
+    r2_list = [r2_0, r2_1, r2_2]
+    orde = np.argmax(r2_list)
 
-    # Instead of a CSV on disk, you could read from an HTTP endpoint here too.
-    DATA_FILENAME = Path(__file__).parent/'data/gdp_data.csv'
-    raw_gdp_df = pd.read_csv(DATA_FILENAME)
+    print(f"R² Orde 0: {r2_0:.4f}")
+    print(f"R² Orde 1: {r2_1:.4f}")
+    print(f"R² Orde 2: {r2_2:.4f}")
+    print(f"Reaksi paling sesuai adalah orde {orde}")
 
-    MIN_YEAR = 1960
-    MAX_YEAR = 2022
+    # Plot grafik
+    plt.figure(figsize=(12, 4))
 
-    # The data above has columns like:
-    # - Country Name
-    # - Country Code
-    # - [Stuff I don't care about]
-    # - GDP for 1960
-    # - GDP for 1961
-    # - GDP for 1962
-    # - ...
-    # - GDP for 2022
-    #
-    # ...but I want this instead:
-    # - Country Name
-    # - Country Code
-    # - Year
-    # - GDP
-    #
-    # So let's pivot all those year-columns into two: Year and GDP
-    gdp_df = raw_gdp_df.melt(
-        ['Country Code'],
-        [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
-        'Year',
-        'GDP',
-    )
+    plt.subplot(1, 3, 1)
+    plt.plot(t, orde0, 'bo-', label='[A] vs t')
+    plt.title(f'Orde 0 (R²={r2_0:.4f})')
+    plt.xlabel('t')
+    plt.ylabel('[A]')
 
-    # Convert years from string to integers
-    gdp_df['Year'] = pd.to_numeric(gdp_df['Year'])
+    plt.subplot(1, 3, 2)
+    plt.plot(t, orde1, 'go-', label='ln[A] vs t')
+    plt.title(f'Orde 1 (R²={r2_1:.4f})')
+    plt.xlabel('t')
+    plt.ylabel('ln[A]')
 
-    return gdp_df
+    plt.subplot(1, 3, 3)
+    plt.plot(t, orde2, 'ro-', label='1/[A] vs t')
+    plt.title(f'Orde 2 (R²={r2_2:.4f})')
+    plt.xlabel('t')
+    plt.ylabel('1/[A]')
 
-gdp_df = get_gdp_data()
-
-# -----------------------------------------------------------------------------
-# Draw the actual page
-
-# Set the title that appears at the top of the page.
-'''
-# :earth_americas: GDP dashboard
-
-Browse GDP data from the [World Bank Open Data](https://data.worldbank.org/) website. As you'll
-notice, the data only goes to 2022 right now, and datapoints for certain years are often missing.
-But it's otherwise a great (and did I mention _free_?) source of data.
-'''
-
-# Add some spacing
-''
-''
-
-min_value = gdp_df['Year'].min()
-max_value = gdp_df['Year'].max()
-
-from_year, to_year = st.slider(
-    'Which years are you interested in?',
-    min_value=min_value,
-    max_value=max_value,
-    value=[min_value, max_value])
-
-countries = gdp_df['Country Code'].unique()
-
-if not len(countries):
-    st.warning("Select at least one country")
-
-selected_countries = st.multiselect(
-    'Which countries would you like to view?',
-    countries,
-    ['DEU', 'FRA', 'GBR', 'BRA', 'MEX', 'JPN'])
-
-''
-''
-''
-
-# Filter the data
-filtered_gdp_df = gdp_df[
-    (gdp_df['Country Code'].isin(selected_countries))
-    & (gdp_df['Year'] <= to_year)
-    & (from_year <= gdp_df['Year'])
-]
-
-st.header('GDP over time', divider='gray')
-
-''
-
-st.line_chart(
-    filtered_gdp_df,
-    x='Year',
-    y='GDP',
-    color='Country Code',
-)
-
-''
-''
-
-
-first_year = gdp_df[gdp_df['Year'] == from_year]
-last_year = gdp_df[gdp_df['Year'] == to_year]
-
-st.header(f'GDP in {to_year}', divider='gray')
-
-''
-
-cols = st.columns(4)
-
-for i, country in enumerate(selected_countries):
-    col = cols[i % len(cols)]
-
-    with col:
-        first_gdp = first_year[first_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-        last_gdp = last_year[last_year['Country Code'] == country]['GDP'].iat[0] / 1000000000
-
-        if math.isnan(first_gdp):
-            growth = 'n/a'
-            delta_color = 'off'
-        else:
-            growth = f'{last_gdp / first_gdp:,.2f}x'
-            delta_color = 'normal'
-
-        st.metric(
-            label=f'{country} GDP',
-            value=f'{last_gdp:,.0f}B',
-            delta=growth,
-            delta_color=delta_color
-        )
+    plt.tight_layout()
+    plt.show()
