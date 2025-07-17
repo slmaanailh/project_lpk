@@ -19,38 +19,41 @@ default_data = pd.DataFrame({
 })
 data = st.data_editor(default_data, num_rows="dynamic", use_container_width=True)
 
-# Validasi jumlah data
+# Validasi dan proses regresi
 if len(data.dropna()) >= 2:
     try:
+        # Ambil data
         x = data['X'].astype(float).to_numpy()
         y = data['Y'].astype(float).to_numpy()
 
-        # Pilih ordo regresi
-        selected_orders = st.multiselect("Pilih orde regresi yang ingin ditampilkan", options=list(range(0, 6)), default=[0, 1, 2])
+        # Pilih orde regresi
+        selected_orders = st.multiselect(
+            "Pilih orde regresi yang ingin ditampilkan", 
+            options=list(range(0, 6)), 
+            default=[0, 1, 2]
+        )
 
-        # Buat grafik
+        # Plot awal
         fig, ax = plt.subplots(figsize=(10, 6))
-        ax.scatter(x, y, label="Data", color="black")
+        ax.scatter(x, y, label='Data', color='black')
 
-        # Loop setiap orde terpilih
+        # Hitung dan plot tiap orde regresi
         for order in selected_orders:
-            coeffs = np.polyfit(x, y, order)
-            poly_eq = np.poly1d(coeffs)
-            y_pred = poly_eq(x)
+            coef = np.polyfit(x, y, order)
+            poly_func = np.poly1d(coef)
+            y_pred = poly_func(x)
             r2 = r2_score(y, y_pred)
 
-            # Buat label persamaan
-            eq_str = " + ".join([f"{c:.3f}x^{i}" if i > 1 else (f"{c:.3f}x" if i == 1 else f"{c:.3f}")
-                                 for i, c in zip(range(order, -1, -1), coeffs)])
-            label = f"Orde {order}: y = {eq_str}, R² = {r2:.4f}"
-
-            # Plot garis regresi
-            x_line = np.linspace(x.min(), x.max(), 200)
-            y_line = poly_eq(x_line)
-            ax.plot(x_line, y_line, label=label)
+            label = f"Orde {order}: y = {poly_func} | R² = {r2:.4f}"
+            ax.plot(x, y_pred, label=label)
 
         ax.set_xlabel("X")
         ax.set_ylabel("Y")
         ax.set_title("Regresi Polinomial")
         ax.legend()
         st.pyplot(fig)
+
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat memproses data: {e}")
+else:
+    st.warning("Masukkan setidaknya dua pasang data.")
