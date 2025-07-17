@@ -32,11 +32,11 @@ if len(data.dropna()) >= 2:
     try:
         x = data['X'].astype(float).to_numpy()
         y = data['Y'].astype(float).to_numpy()
-
+        
         fig, ax = plt.subplots(figsize=(10, 6))
         ax.scatter(x, y)
         st.pyplot(fig)
     except Exception as e:
-        st.error(f"Terjadi kesalahan: {e}")
+        st.error(f"Terjadi kesalahan saat memproses data: {e}")
 else:
     st.warning("Masukkan setidaknya dua pasang data.")
