@@ -2,86 +2,79 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
-import re
-from io import BytesIO
 
-st.set_page_config(page_title="Regresi Polinomial Interaktif", layout="centered")
-st.title("📈 Regresi Polinomial dan Korelasi dari Tabel Data")
+st.set_page_config(page_title="Regresi Orde Reaksi", layout="centered")
+st.title("Analisis Orde Reaksi Berdasarkan Data Konsentrasi vs Waktu")
 
 st.markdown("""
-Masukkan data X dan Y melalui tabel di bawah ini. Kemudian pilih satu atau beberapa orde regresi
-(orde 0 = konstan, orde 1 = linear, orde 2 = kuadratik, dst) yang ingin ditampilkan.
+Masukkan data waktu (t) dan konsentrasi atau absorbansi (A) pada tabel berikut. Aplikasi ini akan menampilkan grafik dan analisis regresi untuk orde 0, 1, dan 2 berdasarkan persamaan kinetika reaksi.
+
+- **Orde 0:** A = A₀ - kt
+- **Orde 1:** ln A = ln A₀ - kt
+- **Orde 2:** 1/A = kt + 1/A₀
 """)
 
 # Tabel input data
 default_data = pd.DataFrame({
-    'X': [1, 2, 3, 4, 5, 6],
-    'Y': [2.5, 3.7, 7.2, 13.8, 21.5, 30.1]
+    't': [0, 1, 2, 3, 4, 5],
+    'A': [10, 8.4, 7.1, 5.9, 4.8, 3.6]
 })
 data = st.data_editor(default_data, num_rows="dynamic", use_container_width=True)
 
+# Validasi data
 if len(data.dropna()) >= 2:
     try:
-        x = data['X'].astype(float).to_numpy()
-        y = data['Y'].astype(float).to_numpy()
+        t = data['t'].astype(float).to_numpy()
+        A = data['A'].astype(float).to_numpy()
 
-        selected_orders = st.multiselect("Pilih orde regresi:", options=list(range(0, 6)), default=[0, 1, 2])
-
-        # Plot
-        fig, ax = plt.subplots(figsize=(10, 6))
-        ax.scatter(x, y, label='Data', color='black', s=80, edgecolors='white', linewidths=0.5)
-
-        result_table = []
-        for order in selected_orders:
-            coef = np.polyfit(x, y, order)
-            poly_func = np.poly1d(coef)
-            y_pred = poly_func(x)
-            r2 = r2_score(y, y_pred)
-
-            label = f"Orde {order}: y = {poly_func} | R² = {r2:.4f}"
-            ax.plot(x, y_pred, label=label, linewidth=2.5)
-
-            eq = re.sub(r"\n", " ", str(poly_func))
-            latex_eq = poly_func.__str__().replace("\n", " ").replace("**", "^")
-            result_table.append({
-                "Orde": order,
-                "Persamaan": eq,
-                "R²": round(r2, 4),
-                "LaTeX": f"${latex_eq}$"
-            })
-
-        ax.set_xlabel("X", fontsize=12)
-        ax.set_ylabel("Y", fontsize=12)
-        ax.set_title("Grafik Regresi Polinomial", fontsize=16)
-        ax.grid(True, linestyle='--', alpha=0.5)
-        ax.legend()
-        st.pyplot(fig)
-
-        st.markdown("---")
-        st.markdown("### 📊 Hasil Regresi:")
-        st.table(pd.DataFrame(result_table).drop(columns=["LaTeX"]))
-
-        st.markdown("### 🧮 Persamaan Regresi (LaTeX View):")
-        for row in result_table:
-            st.latex(row["LaTeX"])
-
-        # Ekspor ke Excel
-        df_result = pd.DataFrame(result_table).drop(columns=["LaTeX"])
-        output = BytesIO()
-        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-            df_result.to_excel(writer, index=False, sheet_name='Hasil Regresi')
-            writer.save()
-        st.download_button(
-            label="📥 Unduh Hasil sebagai Excel",
-            data=output.getvalue(),
-            file_name="hasil_regresi.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        selected_orders = st.multiselect(
+            "Pilih orde reaksi untuk dianalisis:",
+            options=[0, 1, 2],
+            default=[0, 1, 2],
+            format_func=lambda x: f"Orde {x}"
         )
 
-        st.info("Gunakan multiselect di atas untuk memilih beberapa orde regresi sekaligus.")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        colors = ['red', 'green', 'blue']
+
+        for i, order in enumerate(selected_orders):
+            if order == 0:
+                X = t.reshape(-1, 1)
+                Y = A
+                label = "Orde 0: A vs t"
+            elif order == 1:
+                if np.any(A <= 0):
+                    st.warning("Terdapat nilai A <= 0, tidak bisa dihitung ln(A) untuk orde 1.")
+                    continue
+                X = t.reshape(-1, 1)
+                Y = np.log(A)
+                label = "Orde 1: ln A vs t"
+            elif order == 2:
+                if np.any(A <= 0):
+                    st.warning("Terdapat nilai A <= 0, tidak bisa dihitung 1/A untuk orde 2.")
+                    continue
+                X = t.reshape(-1, 1)
+                Y = 1 / A
+                label = "Orde 2: 1/A vs t"
+
+            model = LinearRegression()
+            model.fit(X, Y)
+            Y_pred = model.predict(X)
+            r2 = r2_score(Y, Y_pred)
+
+            ax.plot(t, Y, 'o', color=colors[i], label=label + f"\nR² = {r2:.4f}")
+            ax.plot(t, Y_pred, '-', color=colors[i], label=f"Fit Orde {order}: y = {model.coef_[0]:.4f}t + {model.intercept_:.4f}")
+
+        ax.set_xlabel("Waktu (t)")
+        ax.set_ylabel("Transformasi A sesuai orde")
+        ax.set_title("Regresi Kinetika Reaksi Kimia")
+        ax.legend()
+        ax.grid(True)
+        st.pyplot(fig)
 
     except Exception as e:
         st.error(f"Terjadi kesalahan saat memproses data: {e}")
 else:
-    st.warning("Masukkan setidaknya dua pasang data X dan Y untuk memulai analisis.")
+    st.warning("Masukkan minimal dua baris data valid.")
