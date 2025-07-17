@@ -29,4 +29,4 @@ if len(data.dropna()) >= 2:
         selected_orders = st.multiselect("Pilih orde regresi yang ingin ditampilkan", options=list(range(0, 6)), default=[0, 1, 2])
 
         if selected_orders:
-            fig, ax = plt.subplots(figsize=(10,
+            fig, ax = plt.subplots(figsize=(10,6))
