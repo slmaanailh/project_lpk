@@ -28,7 +28,16 @@ if len(data.dropna()) >= 2:
         # Pilih ordo regresi (bisa lebih dari satu, termasuk orde 0)
         selected_orders = st.multiselect("Pilih orde regresi yang ingin ditampilkan", options=list(range(0, 6)), default=[0, 1, 2])
 
-        if selected_orders:
-            fig, ax = plt.subplots(figsize=(10,6))
-            except Exception as e:
-    st.error(f"Terjadi kesalahan: {e}")
+if len(data.dropna()) >= 2:
+    try:
+        x = data['X'].astype(float).to_numpy()
+        y = data['Y'].astype(float).to_numpy()
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.scatter(x, y)
+        st.pyplot(fig)
+        
+    except Exception as e:
+        st.error(f"Terjadi kesalahan: {e}")
+else:
+    st.warning("Masukkan setidaknya dua pasang data.")
