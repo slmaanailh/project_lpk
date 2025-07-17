@@ -30,3 +30,5 @@ if len(data.dropna()) >= 2:
 
         if selected_orders:
             fig, ax = plt.subplots(figsize=(10,6))
+            except Exception as e:
+    st.error(f"Terjadi kesalahan: {e}")
