@@ -29,6 +29,7 @@ st.markdown("Untuk menentukan orde reaksi terhadap A, pilih dua baris **dengan n
 options = data.index.tolist()
 pair_A = st.multiselect("Pilih dua baris data:", options, default=[0, 1], key="select_pair_A")
 
+x = None
 if len(pair_A) == 2:
     d1, d2 = data.loc[pair_A[0]], data.loc[pair_A[1]]
     if d1['[B] (M)'] != d2['[B] (M)']:
@@ -64,6 +65,7 @@ st.markdown("Untuk menentukan orde reaksi terhadap B, pilih dua baris **dengan n
 
 pair_B = st.multiselect("Pilih dua baris data:", options, default=[0, 2], key="select_pair_B")
 
+y = None
 if len(pair_B) == 2:
     d1, d2 = data.loc[pair_B[0]], data.loc[pair_B[1]]
     if d1['[A] (M)'] != d2['[A] (M)']:
@@ -89,8 +91,11 @@ if len(pair_B) == 2:
             y = round(y_value)
 
             st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
-
-            if 'x' in locals():
-                st.info(f"🔢 Orde total reaksi adalah {x + y}")
         except:
             st.error("Terjadi kesalahan dalam perhitungan orde terhadap B.")
+
+# Langkah akhir: Orde total
+if x is not None and y is not None:
+    st.divider()
+    st.header("📊 Orde Total Reaksi")
+    st.success(f"🔢 Orde total reaksi adalah x + y = {x} + {y} = {x + y}")
