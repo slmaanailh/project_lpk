@@ -1,91 +1,84 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import math
 
-st.set_page_config("Wizard Orde Reaksi", layout="centered")
+st.set_page_config(page_title="Penentu Orde Reaksi", layout="wide")
 
-# Inisialisasi langkah
-if 'step' not in st.session_state:
-    st.session_state.step = 1
+st.title("🧪 Penentuan Orde Reaksi - Step by Step Wizard")
 
-# ====================
-# LANGKAH 1: INPUT TABEL
-# ====================
-if st.session_state.step == 1:
-    st.title("🧪 Langkah 1: Input Data Eksperimen")
+# Langkah 1: Input Data
+data_default = pd.DataFrame({
+    '[A] (M)': [0.4, 0.8, 0.8],
+    '[B] (M)': [0.2, 0.2, 0.8],
+    'Laju (v)': [10, 20, 40],
+})
 
-    default_data = pd.DataFrame({
-        '[A]': [0.1, 0.1, 0.2],
-        '[B]': [0.1, 0.2, 0.2],
-        'v (laju reaksi)': [0.02, 0.08, 0.16]
-    })
+st.header("1️⃣ Masukkan Data Percobaan")
+st.write("Silakan masukkan konsentrasi reaktan dan laju reaksi dari beberapa eksperimen.")
+data = st.data_editor(data_default, num_rows="dynamic", use_container_width=True, key="data_input")
 
-    data = st.data_editor(default_data, num_rows="dynamic", use_container_width=True, key="tabel_data")
+# Validasi minimal 2 baris
+if len(data) < 2:
+    st.warning("Masukkan minimal 2 baris data untuk melanjutkan.")
+    st.stop()
 
-    if len(data) >= 3:
-        st.session_state.data = data
-        st.button("➡️ Lanjut ke Langkah 2", on_click=lambda: st.session_state.__setitem__('step', 2))
+# Langkah 2: Pilih data untuk menentukan orde terhadap A
+st.header("2️⃣ Pilih Data untuk Menentukan Orde terhadap A")
+st.markdown("Untuk menentukan orde reaksi terhadap A, pilih dua baris **dengan nilai B yang sama**")
 
-# ====================
-# LANGKAH 2: PILIH DATA UNTUK PERHITUNGAN
-# ====================
-elif st.session_state.step == 2:
-    st.title("🧮 Langkah 2: Pilih Pasangan Baris untuk Hitung Orde")
+options = data.index.tolist()
+pair_A = st.multiselect("Pilih dua baris data:", options, default=[0, 1], key="select_pair_A")
 
-    df = st.session_state.data
+# Lanjut jika dua baris dipilih
+if len(pair_A) == 2:
+    d1, d2 = data.loc[pair_A[0]], data.loc[pair_A[1]]
+    if d1['[B] (M)'] != d2['[B] (M)']:
+        st.error("Nilai B harus sama untuk menentukan orde terhadap A")
+    else:
+        st.header("3️⃣ Rumus untuk Orde terhadap A")
+        st.latex(r"\frac{v_2}{v_1} = \left( \frac{[A]_2}{[A]_1} \right)^x")
 
-    st.subheader("🔹 Pilih dua baris untuk mencari orde terhadap [A] (dengan [B] tetap)")
-    rows_A = st.multiselect("Pilih 2 baris (misalnya: baris 2 dan 3)", options=list(df.index), key="rows_A")
+        st.header("4️⃣ Masukkan Angka ke dalam Rumus")
+        v1, v2 = d1['Laju (v)'], d2['Laju (v)']
+        A1, A2 = d1['[A] (M)'], d2['[A] (M)']
 
-    st.subheader("🔹 Pilih dua baris untuk mencari orde terhadap [B] (dengan [A] tetap)")
-    rows_B = st.multiselect("Pilih 2 baris (misalnya: baris 1 dan 2)", options=list(df.index), key="rows_B")
+        try:
+            ratio_v = v2 / v1
+            ratio_A = A2 / A1
+            x = round(math.log(ratio_v) / math.log(ratio_A), 2)
 
-    if len(rows_A) == 2 and len(rows_B) == 2:
-        st.session_state.rows_A = rows_A
-        st.session_state.rows_B = rows_B
-        st.button("➡️ Lanjut ke Langkah 3", on_click=lambda: st.session_state.__setitem__('step', 3))
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x")
+            st.success(f"Orde reaksi terhadap A adalah x = {x}")
+        except:
+            st.error("Terjadi kesalahan dalam perhitungan. Periksa kembali datanya.")
 
-    st.button("⬅️ Kembali ke Langkah 1", on_click=lambda: st.session_state.__setitem__('step', 1))
+# Langkah 5: Ulangi untuk B
+st.divider()
+st.header("5️⃣ Pilih Data untuk Menentukan Orde terhadap B")
+st.markdown("Untuk menentukan orde reaksi terhadap B, pilih dua baris **dengan nilai A yang sama**")
 
-# ====================
-# LANGKAH 3: TAMPILKAN RUMUS & HASIL
-# ====================
-elif st.session_state.step == 3:
-    st.title("📊 Langkah 3: Hasil Perhitungan Orde Reaksi")
+pair_B = st.multiselect("Pilih dua baris data:", options, default=[0, 2], key="select_pair_B")
 
-    df = st.session_state.data
-    A = df['[A]'].values
-    B = df['[B]'].values
-    v = df['v (laju reaksi)'].values
+if len(pair_B) == 2:
+    d1, d2 = data.loc[pair_B[0]], data.loc[pair_B[1]]
+    if d1['[A] (M)'] != d2['[A] (M)']:
+        st.error("Nilai A harus sama untuk menentukan orde terhadap B")
+    else:
+        st.latex(r"\frac{v_2}{v_1} = \left( \frac{[B]_2}{[B]_1} \right)^y")
+        v1, v2 = d1['Laju (v)'], d2['Laju (v)']
+        B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
-    i, j = st.session_state.rows_A
-    x = np.log(v[j]/v[i]) / np.log(A[j]/A[i])
+        try:
+            ratio_v = v2 / v1
+            ratio_B = B2 / B1
+            y = round(math.log(ratio_v) / math.log(ratio_B), 2)
 
-    m, n = st.session_state.rows_B
-    y = np.log(v[n]/v[m]) / np.log(B[n]/B[m])
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{B2}}}{{{B1}}})^y")
+            st.success(f"Orde reaksi terhadap B adalah y = {y}")
 
-    orde_total = x + y
-
-    # Tampilkan langkah dengan LaTeX
-    st.subheader("📘 Rumus Umum:")
-    st.latex(r"v = k [A]^x [B]^y")
-
-    st.subheader(f"🔢 Hitung Orde terhadap [A] (baris {i+1} & {j+1}):")
-    st.latex(fr"""
-        \frac{{v_{j+1}}}{{v_{i+1}}} = 
-        \left( \frac{{[A]_{j+1}}}{{[A]_{i+1}}} \right)^x \Rightarrow 
-        x = \frac{{\log({v[j]:.3f}/{v[i]:.3f})}}{{\log({A[j]:.3f}/{A[i]:.3f})}} = {x:.2f}
-    """)
-
-    st.subheader(f"🔢 Hitung Orde terhadap [B] (baris {m+1} & {n+1}):")
-    st.latex(fr"""
-        \frac{{v_{n+1}}}{{v_{m+1}}} = 
-        \left( \frac{{[B]_{n+1}}}{{[B]_{m+1}}} \right)^y \Rightarrow 
-        y = \frac{{\log({v[n]:.3f}/{v[m]:.3f})}}{{\log({B[n]:.3f}/{B[m]:.3f})}} = {y:.2f}
-    """)
-
-    st.success(f"✅ Orde Reaksi Total: {x:.2f} + {y:.2f} = {orde_total:.2f}")
-
-    # Tombol Navigasi
-    st.button("⬅️ Ulangi Pilihan", on_click=lambda: st.session_state.__setitem__('step', 2))
-    st.button("🔁 Ulang dari Awal", on_click=lambda: st.session_state.__setitem__('step', 1))
+            total = x + y if 'x' in locals() else '...'  # Orde total jika x sudah dihitung
+            if isinstance(total, (int, float)):
+                st.info(f"**Orde total reaksi adalah {total}**")
+        except:
+            st.error("Terjadi kesalahan dalam perhitungan. Periksa kembali datanya.")
