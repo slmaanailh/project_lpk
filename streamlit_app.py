@@ -1,139 +1,124 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import math
 from fractions import Fraction
 
 st.set_page_config(page_title="Penentu Orde Reaksi", layout="wide")
+st.title("🧪 Penentuan Orde Reaksi - Step by Step Wizard")
 
-# Sidebar Navigasi
-st.sidebar.title("🧪 Navigasi")
-page = st.sidebar.radio("Pilih Halaman", ["Beranda", "Penentuan Orde", "Petunjuk", "Hasil"])
+# Langkah 1: Input Data
+data_default = pd.DataFrame({
+    '[A] (M)': [0.4, 0.8, 0.8],
+    '[B] (M)': [0.2, 0.2, 0.8],
+    'Laju (v)': [10, 20, 40],
+})
+data_default.index = range(1, len(data_default) + 1)
 
-# ================================
-# 📌 BERANDA
-# ================================
-if page == "Beranda":
-    st.title("🔬 Penentu Orde Reaksi")
-    st.markdown("""
-    Selamat datang!  
-    Aplikasi ini membantu kamu menentukan **orde reaksi** terhadap A dan B berdasarkan data percobaan.
+st.header("1️⃣ Masukkan Data Percobaan")
+st.write("Silakan masukkan konsentrasi reaktan dan laju reaksi dari beberapa eksperimen.")
 
-    Gunakan menu di sidebar untuk:
-    - 📊 Menentukan Orde Reaksi
-    - 📘 Melihat Petunjuk
-    - 📈 Lihat Hasil & Analisis
-    """)
+# Tambahkan kolom nomor
+styled_data = data_default.copy()
+styled_data.insert(0, "No", range(1, len(styled_data)+1))
+data = st.data_editor(styled_data, num_rows="dynamic", use_container_width=True, key="data_input")
 
-# ================================
-# 📌 PENENTUAN ORDE
-# ================================
-elif page == "Penentuan Orde":
-    st.title("📊 Penentuan Orde Reaksi")
+if len(data) < 2:
+    st.warning("Masukkan minimal 2 baris data untuk melanjutkan.")
+    st.stop()
 
-    # Data default
-    data_default = pd.DataFrame({
-        '[A] (M)': [0.4, 0.8, 0.8],
-        '[B] (M)': [0.2, 0.2, 0.8],
-        'Laju (v)': [10, 20, 40],
-    })
+# Langkah 2: Orde terhadap A
+st.header("2️⃣ Pilih Data untuk Menentukan Orde terhadap A")
+st.markdown("Pilih dua baris **dengan nilai B yang sama**")
+options = list(data['No'])
+pair_A = st.multiselect("Pilih dua nomor baris data:", options, default=[1, 2], key="select_pair_A")
 
-    data_default.insert(0, "No", range(1, len(data_default) + 1))
+x = None
+if len(pair_A) == 2:
+    d1 = data[data['No'] == pair_A[0]].iloc[0]
+    d2 = data[data['No'] == pair_A[1]].iloc[0]
+    if d1['[B] (M)'] != d2['[B] (M)']:
+        st.error("Nilai B harus sama untuk menentukan orde terhadap A")
+    else:
+        st.header("3️⃣ Rumus Lengkap untuk Orde terhadap A")
+        st.latex(r"\frac{v_2}{v_1} = \left( \frac{[A]_2}{[A]_1} \right)^x")
 
-    st.header("1️⃣ Masukkan Data Percobaan")
-    data = st.data_editor(data_default, num_rows="dynamic", use_container_width=True, key="data_input")
+        st.header("4️⃣ Masukkan Angka ke dalam Rumus")
+        v1, v2 = d1['Laju (v)'], d2['Laju (v)']
+        A1, A2 = d1['[A] (M)'], d2['[A] (M)']
 
-    if len(data) < 2:
-        st.warning("Masukkan minimal 2 baris data untuk melanjutkan.")
-        st.stop()
-
-    nomor_baris = data["No"].tolist()
-
-    # Orde terhadap A
-    st.header("2️⃣ Pilih Data untuk Orde terhadap A")
-    pair_A = st.multiselect("Pilih dua baris dengan [B] sama:", nomor_baris, default=[1, 2], key="select_pair_A")
-
-    x_frac = None
-    if len(pair_A) == 2:
-        idx1, idx2 = sorted(pair_A)
-        d1 = data[data["No"] == idx1].iloc[0]
-        d2 = data[data["No"] == idx2].iloc[0]
-
-        if d1['[B] (M)'] != d2['[B] (M)']:
-            st.error("Nilai [B] harus sama.")
+        if 0 in [v1, v2, A1, A2]:
+            st.error("Nilai tidak boleh nol.")
         else:
-            v1, v2 = d1['Laju (v)'], d2['Laju (v)']
-            A1, A2 = d1['[A] (M)'], d2['[A] (M)']
-            ratio_v = max(v1, v2) / min(v1, v2)
-            ratio_A = max(A1, A2) / min(A1, A2)
-
             try:
-                x_val = math.log(ratio_v) / math.log(ratio_A)
-                x_frac = Fraction(x_val).limit_denominator()
-                st.success(f"Orde terhadap A = {x_frac} (≈ {x_val:.4f})")
+                ratio_v = Fraction(v2, v1)
+                ratio_A = Fraction(A2, A1)
+
+                st.markdown("Substitusi ke dalam persamaan:")
+                st.latex(f"\\frac{{{ratio_v.numerator}}}{{{ratio_v.denominator}}} = (\\frac{{{ratio_A.numerator}}}{{{ratio_A.denominator}}})^x")
+
+                x_value = math.log(float(ratio_v)) / math.log(float(ratio_A))
+                x = round(x_value, 2)
+
+                st.markdown("Langkah logaritma untuk x:")
+                st.latex(rf"x = \frac{{\log({float(ratio_v):.2f})}}{{\log({float(ratio_A):.2f})}}")
+
+                st.success(f"6️⃣ Orde reaksi terhadap A adalah x = {x}")
             except Exception as e:
-                st.error(f"Kesalahan: {e}")
+                st.error(f"Terjadi kesalahan dalam perhitungan orde terhadap A: {e}")
 
-    # Orde terhadap B
-    st.header("3️⃣ Pilih Data untuk Orde terhadap B")
-    pair_B = st.multiselect("Pilih dua baris dengan [A] sama:", nomor_baris, default=[1, 3], key="select_pair_B")
+# Orde terhadap B
+st.divider()
+st.header("7️⃣ Pilih Data untuk Menentukan Orde terhadap B")
+st.markdown("Pilih dua baris **dengan nilai A yang sama**")
+pair_B = st.multiselect("Pilih dua nomor baris data:", options, default=[1, 3], key="select_pair_B")
 
-    y_frac = None
-    if len(pair_B) == 2:
-        idx1, idx2 = sorted(pair_B)
-        d1 = data[data["No"] == idx1].iloc[0]
-        d2 = data[data["No"] == idx2].iloc[0]
+y = None
+if len(pair_B) == 2:
+    d1 = data[data['No'] == pair_B[0]].iloc[0]
+    d2 = data[data['No'] == pair_B[1]].iloc[0]
+    if d1['[A] (M)'] != d2['[A] (M)']:
+        st.error("Nilai A harus sama untuk menentukan orde terhadap B")
+    else:
+        st.header("8️⃣ Rumus Lengkap untuk Orde terhadap B")
+        st.latex(r"\frac{v_2}{v_1} = \left( \frac{[B]_2}{[B]_1} \right)^y")
 
-        if d1['[A] (M)'] != d2['[A] (M)']:
-            st.error("Nilai [A] harus sama.")
+        st.header("9️⃣ Masukkan Angka ke dalam Rumus")
+        v1, v2 = d1['Laju (v)'], d2['Laju (v)']
+        B1, B2 = d1['[B] (M)'], d2['[B] (M)']
+
+        if 0 in [v1, v2, B1, B2]:
+            st.error("Nilai tidak boleh nol.")
         else:
-            v1, v2 = d1['Laju (v)'], d2['Laju (v)']
-            B1, B2 = d1['[B] (M)'], d2['[B] (M)']
-            ratio_v = max(v1, v2) / min(v1, v2)
-            ratio_B = max(B1, B2) / min(B1, B2)
-
             try:
-                y_val = math.log(ratio_v) / math.log(ratio_B)
-                y_frac = Fraction(y_val).limit_denominator()
-                st.success(f"Orde terhadap B = {y_frac} (≈ {y_val:.4f})")
+                ratio_v = Fraction(v2, v1)
+                ratio_B = Fraction(B2, B1)
+
+                st.markdown("Substitusi ke dalam persamaan:")
+                st.latex(f"\\frac{{{ratio_v.numerator}}}{{{ratio_v.denominator}}} = (\\frac{{{ratio_B.numerator}}}{{{ratio_B.denominator}}})^y")
+
+                y_value = math.log(float(ratio_v)) / math.log(float(ratio_B))
+                y = round(y_value, 2)
+
+                st.markdown("Langkah logaritma untuk y:")
+                st.latex(rf"y = \frac{{\log({float(ratio_v):.2f})}}{{\log({float(ratio_B):.2f})}}")
+
+                st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
             except Exception as e:
-                st.error(f"Kesalahan: {e}")
+                st.error(f"Terjadi kesalahan dalam perhitungan orde terhadap B: {e}")
 
-    # Orde total
-    if x_frac is not None and y_frac is not None:
-        total = x_frac + y_frac
-        st.header("4️⃣ Orde Total Reaksi")
-        st.success(f"Total Orde = {x_frac} + {y_frac} = {total} (≈ {float(total):.4f})")
-        st.info(f"Persamaan laju: v = k [A]^{x_frac} [B]^{y_frac}")
+# Orde total dan persamaan laju
+if x is not None and y is not None:
+    st.divider()
+    st.header("📊 Orde Total Reaksi")
+    total = round(x + y, 2)
+    st.success(f"🔢 Orde total reaksi adalah x + y = {x} + {y} = {total}")
 
-# ================================
-# 📌 PETUNJUK
-# ================================
-elif page == "Petunjuk":
-    st.title("📘 Petunjuk Penggunaan")
-    st.markdown("""
-    ### Cara Menentukan Orde Reaksi
-    1. Masukkan data konsentrasi dan laju reaksi
-    2. Pilih dua percobaan:
-       - [B] konstan untuk cari orde A
-       - [A] konstan untuk cari orde B
-    3. Aplikasi akan hitung orde dalam pecahan dan desimal
-
-    ### Rumus:
-    $$
-    \\frac{v_2}{v_1} = \\left( \\frac{[A]_2}{[A]_1} \\right)^x \\left( \\frac{[B]_2}{[B]_1} \\right)^y
-    $$
-    """)
-
-# ================================
-# 📌 HASIL ANALISIS
-# ================================
-elif page == "Hasil":
-    st.title("📈 Hasil & Analisis")
-    st.markdown("""
-    Di halaman ini kamu bisa:
-    - Menampilkan grafik (belum tersedia)
-    - Menyimpan hasil
-    - Menganalisis tren perubahan laju reaksi
-
-    🚧 Fitur tambahan bisa ditambahkan nanti.
-    """)
+    # Konstanta laju
+    A, B, v = data.iloc[0]['[A] (M)'], data.iloc[0]['[B] (M)'], data.iloc[0]['Laju (v)']
+    try:
+        k = v / ((A ** x) * (B ** y))
+        st.info(f"📌 Konstanta laju (k) = {round(k, 4)}")
+        st.markdown(f"**Persamaan laju:**  \n`v = {round(k, 4)} × [A]^{x} × [B]^{y}`")
+    except Exception as e:
+        st.warning(f"Gagal menghitung konstanta laju: {e}")
