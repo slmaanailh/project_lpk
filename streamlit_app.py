@@ -14,6 +14,8 @@ data_default = pd.DataFrame({
     'Laju (v)': [10, 20, 40],
 })
 
+data_default.index = [f"Percobaan {i+1}" for i in data_default.index]
+
 st.header("1️⃣ Masukkan Data Percobaan")
 st.write("Silakan masukkan konsentrasi reaktan dan laju reaksi dari beberapa eksperimen.")
 data = st.data_editor(data_default, num_rows="dynamic", use_container_width=True, key="data_input")
@@ -26,12 +28,12 @@ if len(data) < 2:
 st.header("2️⃣ Pilih Data untuk Menentukan Orde terhadap A")
 st.markdown("Untuk menentukan orde reaksi terhadap A, pilih dua baris **dengan nilai B yang sama**")
 
-options = data.index.tolist()
+options = list(range(len(data)))
 pair_A = st.multiselect("Pilih dua baris data:", options, default=[0, 1], key="select_pair_A")
 
 x = None
 if len(pair_A) == 2:
-    d1, d2 = data.loc[pair_A[0]], data.loc[pair_A[1]]
+    d1, d2 = data.iloc[pair_A[0]], data.iloc[pair_A[1]]
     if d1['[B] (M)'] != d2['[B] (M)']:
         st.error("Nilai B harus sama untuk menentukan orde terhadap A")
     else:
@@ -67,7 +69,7 @@ pair_B = st.multiselect("Pilih dua baris data:", options, default=[0, 2], key="s
 
 y = None
 if len(pair_B) == 2:
-    d1, d2 = data.loc[pair_B[0]], data.loc[pair_B[1]]
+    d1, d2 = data.iloc[pair_B[0]], data.iloc[pair_B[1]]
     if d1['[A] (M)'] != d2['[A] (M)']:
         st.error("Nilai A harus sama untuk menentukan orde terhadap B")
     else:
@@ -82,20 +84,4 @@ if len(pair_B) == 2:
         try:
             st.markdown(f"Substitusi ke dalam persamaan:")
             st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
-            st.markdown("Bagian A yang dicoret karena A sama:")
-            st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
-
-            ratio_v = v2 / v1
-            ratio_B = B2 / B1
-            y_value = math.log(ratio_v) / math.log(ratio_B)
-            y = round(y_value)
-
-            st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
-        except:
-            st.error("Terjadi kesalahan dalam perhitungan orde terhadap B.")
-
-# Langkah akhir: Orde total
-if x is not None and y is not None:
-    st.divider()
-    st.header("📊 Orde Total Reaksi")
-    st.success(f"🔢 Orde total reaksi adalah x + y = {x} + {y} = {x + y}")
+            st.markdown("Bag
