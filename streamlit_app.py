@@ -6,13 +6,13 @@ from fractions import Fraction
 st.set_page_config(page_title="Penentu Orde Reaksi", layout="wide")
 st.title("🧪 Penentuan Orde Reaksi - Step by Step Wizard")
 
-# Fungsi format hasil orde (bulat atau pecahan)
-def format_orde(value):
+# Fungsi: Format hasil sebagai pecahan + desimal
+def format_orde_mixed(value):
     if value == int(value):
         return str(int(value))
     else:
         frac = Fraction(value).limit_denominator(10)
-        return f"\\frac{{{frac.numerator}}}{{{frac.denominator}}}"
+        return f"\\frac{{{frac.numerator}}}{{{frac.denominator}}} \\; (={round(value, 2)})"
 
 # Langkah 1: Input Data
 data_default = pd.DataFrame({
@@ -31,14 +31,11 @@ if len(data) < 2:
     st.warning("Masukkan minimal 2 baris data untuk melanjutkan.")
     st.stop()
 
-# Ambil daftar nomor baris dari kolom "No"
 row_numbers = data["No"].tolist()
 
-# Langkah 2: Pemilihan untuk Orde terhadap A
+# Orde terhadap A
 st.header("2️⃣ Pilih Baris untuk Menentukan Orde terhadap A")
-st.markdown("Pilih dua baris *dengan nilai B yang sama* (kolom [B])")
-
-pair_A = st.multiselect("Pilih dua nomor baris:", row_numbers, default=[1, 2], key="select_pair_A")
+pair_A = st.multiselect("Pilih dua nomor baris (dengan B yang sama):", row_numbers, default=[1, 2])
 x = None
 
 if len(pair_A) == 2:
@@ -68,17 +65,15 @@ if len(pair_A) == 2:
 
         try:
             x_value = math.log(ratio_v) / math.log(ratio_A)
-            x = round(x_value, 6)  # jaga presisi untuk konversi pecahan
-            st.success(f"✅ Orde reaksi terhadap A adalah x = {format_orde(x)}")
+            x = round(x_value, 6)
+            st.latex(rf"x = {format_orde_mixed(x)}")
         except:
             st.error("⚠️ Terjadi kesalahan saat menghitung orde terhadap A.")
 
-# Langkah 7: Pemilihan untuk Orde terhadap B
+# Orde terhadap B
 st.divider()
 st.header("7️⃣ Pilih Baris untuk Menentukan Orde terhadap B")
-st.markdown("Pilih dua baris *dengan nilai A yang sama* (kolom [A])")
-
-pair_B = st.multiselect("Pilih dua nomor baris:", row_numbers, default=[1, 3], key="select_pair_B")
+pair_B = st.multiselect("Pilih dua nomor baris (dengan A yang sama):", row_numbers, default=[1, 3])
 y = None
 
 if len(pair_B) == 2:
@@ -109,14 +104,14 @@ if len(pair_B) == 2:
         try:
             y_value = math.log(ratio_v) / math.log(ratio_B)
             y = round(y_value, 6)
-            st.success(f"✅ Orde reaksi terhadap B adalah y = {format_orde(y)}")
+            st.latex(rf"y = {format_orde_mixed(y)}")
         except:
             st.error("⚠️ Terjadi kesalahan saat menghitung orde terhadap B.")
 
-# Langkah akhir: Orde total
+# Orde total
 if x is not None and y is not None:
     st.divider()
     st.header("📊 Orde Total Reaksi")
-    st.success(
-        f"🔢 Orde total reaksi adalah x + y = {format_orde(x)} + {format_orde(y)} = {format_orde(x + y)}"
+    st.latex(
+        rf"\text{{Orde total reaksi adalah }} x + y = {format_orde_mixed(x)} + {format_orde_mixed(y)} = {format_orde_mixed(x + y)}"
     )
