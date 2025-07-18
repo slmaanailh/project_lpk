@@ -38,7 +38,7 @@ pair_A = st.multiselect("Pilih dua baris data:", options, default=[0, 1], key="s
 x = None
 if len(pair_A) == 2:
     idx1, idx2 = sorted(pair_A)
-d1, d2 = data.iloc[idx1], data.iloc[idx2]
+    d1, d2 = data.iloc[idx1], data.iloc[idx2]
     if d1['[B] (M)'] != d2['[B] (M)']:
         st.error("Nilai B harus sama untuk menentukan orde terhadap A")
     else:
@@ -55,7 +55,7 @@ d1, d2 = data.iloc[idx1], data.iloc[idx2]
             ratio_A = A2 / A1
 
             st.markdown(f"Substitusi ke dalam persamaan:")
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \\, (\\frac{{{B2}}}{{{B1}}})^y")
             st.markdown("Bagian B yang dicoret karena B sama:")
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \left( \frac{{{A2}}}{{{A1}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}")
 
@@ -76,7 +76,7 @@ pair_B = st.multiselect("Pilih dua baris data:", options, default=[0, 2], key="s
 y = None
 if len(pair_B) == 2:
     idx1, idx2 = sorted(pair_B)
-d1, d2 = data.iloc[idx1], data.iloc[idx2]
+    d1, d2 = data.iloc[idx1], data.iloc[idx2]
     if d1['[A] (M)'] != d2['[A] (M)']:
         st.error("Nilai A harus sama untuk menentukan orde terhadap B")
     else:
@@ -93,14 +93,14 @@ d1, d2 = data.iloc[idx1], data.iloc[idx2]
             ratio_B = B2 / B1
 
             st.markdown(f"Substitusi ke dalam persamaan:")
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \\, (\\frac{{{B2}}}{{{B1}}})^y")
             st.markdown("Bagian A yang dicoret karena A sama:")
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
 
             y_value = math.log(ratio_v) / math.log(ratio_B)
             y = round(y_value)
 
-            st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
+            st.success(f"🔟 Orde reaksi terhadap B adalah y = {y}")
         except:
             st.error("Terjadi kesalahan dalam perhitungan orde terhadap B.")
 
