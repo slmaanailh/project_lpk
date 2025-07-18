@@ -18,7 +18,11 @@ data_default.index = [f"Percobaan {i+1}" for i in data_default.index]
 
 st.header("1️⃣ Masukkan Data Percobaan")
 st.write("Silakan masukkan konsentrasi reaktan dan laju reaksi dari beberapa eksperimen.")
-data = st.data_editor(data_default, num_rows="dynamic", use_container_width=True, key="data_input")
+
+# Tambahkan nomor kolom
+styled_data = data_default.copy()
+styled_data.insert(0, "No", range(1, len(styled_data)+1))
+data = st.data_editor(styled_data, num_rows="dynamic", use_container_width=True, key="data_input")
 
 if len(data) < 2:
     st.warning("Masukkan minimal 2 baris data untuk melanjutkan.")
@@ -84,4 +88,20 @@ if len(pair_B) == 2:
         try:
             st.markdown(f"Substitusi ke dalam persamaan:")
             st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
-            st.markdown("Bag
+            st.markdown("Bagian A yang dicoret karena A sama:")
+            st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
+
+            ratio_v = v2 / v1
+            ratio_B = B2 / B1
+            y_value = math.log(ratio_v) / math.log(ratio_B)
+            y = round(y_value)
+
+            st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
+        except:
+            st.error("Terjadi kesalahan dalam perhitungan orde terhadap B.")
+
+# Langkah akhir: Orde total
+if x is not None and y is not None:
+    st.divider()
+    st.header("📊 Orde Total Reaksi")
+    st.success(f"🔢 Orde total reaksi adalah x + y = {x} + {y} = {x + y}")
