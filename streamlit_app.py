@@ -34,28 +34,30 @@ if len(pair_A) == 2:
     if d1['[B] (M)'] != d2['[B] (M)']:
         st.error("Nilai B harus sama untuk menentukan orde terhadap A")
     else:
-        st.header("3️⃣ Rumus untuk Orde terhadap A")
-        st.latex(r"\frac{v_2}{v_1} = \left( \frac{[A]_2}{[A]_1} \right)^x")
+        st.header("3️⃣ Rumus Lengkap untuk Orde terhadap A")
+        st.latex(r"\frac{v_2}{v_1} = \left( \frac{[A]_2}{[A]_1} \right)^x \left( \frac{[B]_2}{[B]_1} \right)^y")
 
         st.header("4️⃣ Masukkan Angka ke dalam Rumus")
         v1, v2 = d1['Laju (v)'], d2['Laju (v)']
         A1, A2 = d1['[A] (M)'], d2['[A] (M)']
+        B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
+            st.markdown(f"Substitusi ke dalam persamaan:")
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
+            st.markdown("Bagian B yang dicoret karena B sama:")
+            st.latex(rf"\frac{{{v2}}}{{{v1}}} = \left( \frac{{{A2}}}{{{A1}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}")
+
             ratio_v = v2 / v1
             ratio_A = A2 / A1
             x_value = math.log(ratio_v) / math.log(ratio_A)
             x = round(x_value)
 
-            st.markdown(f"Persamaan substitusi:")
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x")
-            st.markdown("Bagian yang dicoret:")
-            st.latex(rf"\cancel{{\frac{{{v2}}}{{{v1}}}}} = \left( \cancel{{\frac{{{A2}}}{{{A1}}}}} \right)^x")
-            st.success(f"Orde reaksi terhadap A adalah x = {x}")
+            st.success(f"6️⃣ Orde reaksi terhadap A adalah x = {x}")
         except:
-            st.error("Terjadi kesalahan dalam perhitungan.")
+            st.error("Terjadi kesalahan dalam perhitungan orde terhadap A.")
 
-# Langkah 5-11: Ulangi untuk B
+# Langkah 7-11: Ulangi untuk B
 st.divider()
 st.header("7️⃣ Pilih Data untuk Menentukan Orde terhadap B")
 st.markdown("Untuk menentukan orde reaksi terhadap B, pilih dua baris **dengan nilai A yang sama**")
@@ -67,26 +69,28 @@ if len(pair_B) == 2:
     if d1['[A] (M)'] != d2['[A] (M)']:
         st.error("Nilai A harus sama untuk menentukan orde terhadap B")
     else:
-        st.header("8️⃣ Rumus untuk Orde terhadap B")
-        st.latex(r"\frac{v_2}{v_1} = \left( \frac{[B]_2}{[B]_1} \right)^y")
+        st.header("8️⃣ Rumus Lengkap untuk Orde terhadap B")
+        st.latex(r"\frac{v_2}{v_1} = \left( \frac{[A]_2}{[A]_1} \right)^x \left( \frac{[B]_2}{[B]_1} \right)^y")
 
         st.header("9️⃣ Masukkan Angka ke dalam Rumus")
         v1, v2 = d1['Laju (v)'], d2['Laju (v)']
+        A1, A2 = d1['[A] (M)'], d2['[A] (M)']
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
+            st.markdown(f"Substitusi ke dalam persamaan:")
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
+            st.markdown("Bagian A yang dicoret karena A sama:")
+            st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
+
             ratio_v = v2 / v1
             ratio_B = B2 / B1
             y_value = math.log(ratio_v) / math.log(ratio_B)
             y = round(y_value)
 
-            st.markdown(f"Persamaan substitusi:")
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{B2}}}{{{B1}}})^y")
-            st.markdown("Bagian yang dicoret:")
-            st.latex(rf"\cancel{{\frac{{{v2}}}{{{v1}}}}} = \left( \cancel{{\frac{{{B2}}}{{{B1}}}}} \right)^y")
-            st.success(f"Orde reaksi terhadap B adalah y = {y}")
+            st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
 
             if 'x' in locals():
                 st.info(f"🔢 Orde total reaksi adalah {x + y}")
         except:
-            st.error("Terjadi kesalahan dalam perhitungan.")
+            st.error("Terjadi kesalahan dalam perhitungan orde terhadap B.")
