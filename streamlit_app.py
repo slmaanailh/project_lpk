@@ -12,7 +12,7 @@ data_default = pd.DataFrame({
     'Laju (v)': [10, 20, 40],
 })
 
-# Tambahkan nomor urut (1, 2, 3,...)
+# Tambahkan nomor urut
 data_default.insert(0, "No", range(1, len(data_default) + 1))
 
 st.header("1️⃣ Masukkan Data Percobaan")
@@ -24,10 +24,9 @@ if len(data) < 2:
     st.warning("Masukkan minimal 2 baris data untuk melanjutkan.")
     st.stop()
 
-# Ambil daftar nomor "No"
 nomor_baris = data["No"].tolist()
 
-# Langkah 2: Pilih dua baris untuk orde terhadap A
+# Langkah 2: Orde terhadap A
 st.header("2️⃣ Pilih Data untuk Menentukan Orde terhadap A")
 st.markdown("Pilih dua nomor baris **dengan nilai [B] yang sama**")
 
@@ -56,13 +55,13 @@ if len(pair_A) == 2:
             st.latex(rf"\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = \left( \frac{{{max(A1,A2)}}}{{{min(A1,A2)}}} \right)^x")
 
             x_value = math.log(ratio_v) / math.log(ratio_A)
-            x = round(x_value, 2)
+            x = round(x_value)
 
             st.success(f"Orde reaksi terhadap A adalah x = {x} (hasil asli: {x_value:.4f})")
         except Exception as e:
             st.error(f"Terjadi kesalahan dalam perhitungan orde terhadap A: {e}")
 
-# Langkah 4: Pilih dua baris untuk orde terhadap B
+# Langkah 4: Orde terhadap B
 st.divider()
 st.header("4️⃣ Pilih Data untuk Menentukan Orde terhadap B")
 st.markdown("Pilih dua nomor baris **dengan nilai [A] yang sama**")
@@ -92,13 +91,13 @@ if len(pair_B) == 2:
             st.latex(rf"\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = \left( \frac{{{max(B1,B2)}}}{{{min(B1,B2)}}} \right)^y")
 
             y_value = math.log(ratio_v) / math.log(ratio_B)
-            y = round(y_value, 2)
+            y = round(y_value)
 
             st.success(f"Orde reaksi terhadap B adalah y = {y} (hasil asli: {y_value:.4f})")
         except Exception as e:
             st.error(f"Terjadi kesalahan dalam perhitungan orde terhadap B: {e}")
 
-# Orde total reaksi
+# Langkah 6: Orde total
 if x is not None and y is not None:
     st.divider()
     st.header("📊 Orde Total Reaksi")
