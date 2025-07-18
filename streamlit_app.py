@@ -61,7 +61,7 @@ if len(pair_A) == 2:
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \left( \frac{{{A2}}}{{{A1}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}");
 
             st.markdown(f"Langkah logaritma untuk x:")
-            st.latex(rf"x = \frac{{\log(\frac{{{v2}}}{{{v1}}})}}{{\log(\frac{{{A2}}}{{{A1}}})}}")
+            st.latex(rf"x = \frac{{\log({ratio_v:.2f})}}{{\log({ratio_A:.2f})}}")
             x_value = math.log(ratio_v) / math.log(ratio_A)
             x = round(x_value, 2)
 
@@ -100,7 +100,7 @@ if len(pair_B) == 2:
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
 
             st.markdown(f"Langkah logaritma untuk y:")
-            st.latex(rf"y = \frac{{\log(\frac{{{v2}}}{{{v1}}})}}{{\log(\frac{{{B2}}}{{{B1}}})}}")
+            st.latex(rf"y = \frac{{\log({ratio_v:.2f})}}{{\log({ratio_B:.2f})}}")
             y_value = math.log(ratio_v) / math.log(ratio_B)
             y = round(y_value, 2)
 
