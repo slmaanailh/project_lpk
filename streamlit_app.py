@@ -18,7 +18,6 @@ st.header("1️⃣ Masukkan Data Percobaan")
 st.write("Silakan masukkan konsentrasi reaktan dan laju reaksi dari beberapa eksperimen.")
 data = st.data_editor(data_default, num_rows="dynamic", use_container_width=True, key="data_input")
 
-# Validasi minimal 2 baris
 if len(data) < 2:
     st.warning("Masukkan minimal 2 baris data untuk melanjutkan.")
     st.stop()
@@ -30,7 +29,6 @@ st.markdown("Untuk menentukan orde reaksi terhadap A, pilih dua baris **dengan n
 options = data.index.tolist()
 pair_A = st.multiselect("Pilih dua baris data:", options, default=[0, 1], key="select_pair_A")
 
-# Lanjut jika dua baris dipilih
 if len(pair_A) == 2:
     d1, d2 = data.loc[pair_A[0]], data.loc[pair_A[1]]
     if d1['[B] (M)'] != d2['[B] (M)']:
@@ -46,16 +44,20 @@ if len(pair_A) == 2:
         try:
             ratio_v = v2 / v1
             ratio_A = A2 / A1
-            x = round(math.log(ratio_v) / math.log(ratio_A), 2)
+            x_value = math.log(ratio_v) / math.log(ratio_A)
+            x = round(x_value)
 
+            st.markdown(f"Persamaan substitusi:")
             st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x")
+            st.markdown("Bagian yang dicoret:")
+            st.latex(rf"\cancel{{\frac{{{v2}}}{{{v1}}}}} = \left( \cancel{{\frac{{{A2}}}{{{A1}}}}} \right)^x")
             st.success(f"Orde reaksi terhadap A adalah x = {x}")
         except:
-            st.error("Terjadi kesalahan dalam perhitungan. Periksa kembali datanya.")
+            st.error("Terjadi kesalahan dalam perhitungan.")
 
-# Langkah 5: Ulangi untuk B
+# Langkah 5-11: Ulangi untuk B
 st.divider()
-st.header("5️⃣ Pilih Data untuk Menentukan Orde terhadap B")
+st.header("7️⃣ Pilih Data untuk Menentukan Orde terhadap B")
 st.markdown("Untuk menentukan orde reaksi terhadap B, pilih dua baris **dengan nilai A yang sama**")
 
 pair_B = st.multiselect("Pilih dua baris data:", options, default=[0, 2], key="select_pair_B")
@@ -65,20 +67,18 @@ if len(pair_B) == 2:
     if d1['[A] (M)'] != d2['[A] (M)']:
         st.error("Nilai A harus sama untuk menentukan orde terhadap B")
     else:
+        st.header("8️⃣ Rumus untuk Orde terhadap B")
         st.latex(r"\frac{v_2}{v_1} = \left( \frac{[B]_2}{[B]_1} \right)^y")
+
+        st.header("9️⃣ Masukkan Angka ke dalam Rumus")
         v1, v2 = d1['Laju (v)'], d2['Laju (v)']
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
             ratio_v = v2 / v1
             ratio_B = B2 / B1
-            y = round(math.log(ratio_v) / math.log(ratio_B), 2)
+            y_value = math.log(ratio_v) / math.log(ratio_B)
+            y = round(y_value)
 
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{B2}}}{{{B1}}})^y")
-            st.success(f"Orde reaksi terhadap B adalah y = {y}")
-
-            total = x + y if 'x' in locals() else '...'  # Orde total jika x sudah dihitung
-            if isinstance(total, (int, float)):
-                st.info(f"**Orde total reaksi adalah {total}**")
-        except:
-            st.error("Terjadi kesalahan dalam perhitungan. Periksa kembali datanya.")
+            st.markdown(f"Persamaan substitusi:")
+            st.latex(f"
