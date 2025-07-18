@@ -1,9 +1,18 @@
 import streamlit as st
 import pandas as pd
 import math
+from fractions import Fraction
 
 st.set_page_config(page_title="Penentu Orde Reaksi", layout="wide")
 st.title("🧪 Penentuan Orde Reaksi - Step by Step Wizard")
+
+# Fungsi format hasil orde (bulat atau pecahan)
+def format_orde(value):
+    if value == int(value):
+        return str(int(value))
+    else:
+        frac = Fraction(value).limit_denominator(10)
+        return f"\\frac{{{frac.numerator}}}{{{frac.denominator}}}"
 
 # Langkah 1: Input Data
 data_default = pd.DataFrame({
@@ -59,8 +68,8 @@ if len(pair_A) == 2:
 
         try:
             x_value = math.log(ratio_v) / math.log(ratio_A)
-            x = round(x_value, 2)
-            st.success(f"✅ Orde reaksi terhadap A adalah x = {x}")
+            x = round(x_value, 6)  # jaga presisi untuk konversi pecahan
+            st.success(f"✅ Orde reaksi terhadap A adalah x = {format_orde(x)}")
         except:
             st.error("⚠️ Terjadi kesalahan saat menghitung orde terhadap A.")
 
@@ -99,8 +108,8 @@ if len(pair_B) == 2:
 
         try:
             y_value = math.log(ratio_v) / math.log(ratio_B)
-            y = round(y_value, 2)
-            st.success(f"✅ Orde reaksi terhadap B adalah y = {y}")
+            y = round(y_value, 6)
+            st.success(f"✅ Orde reaksi terhadap B adalah y = {format_orde(y)}")
         except:
             st.error("⚠️ Terjadi kesalahan saat menghitung orde terhadap B.")
 
@@ -108,4 +117,6 @@ if len(pair_B) == 2:
 if x is not None and y is not None:
     st.divider()
     st.header("📊 Orde Total Reaksi")
-    st.success(f"🔢 Orde total reaksi adalah x + y = {x} + {y} = {round(x + y, 2)}")
+    st.success(
+        f"🔢 Orde total reaksi adalah x + y = {format_orde(x)} + {format_orde(y)} = {format_orde(x + y)}"
+    )
