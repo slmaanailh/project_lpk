@@ -58,10 +58,12 @@ if len(pair_A) == 2:
             st.markdown(f"Substitusi ke dalam persamaan:")
             st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
             st.markdown("Bagian B yang dicoret karena B sama:")
-            st.latex(rf"\frac{{{v2}}}{{{v1}}} = \left( \frac{{{A2}}}{{{A1}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}")
+            st.latex(rf"\frac{{{v2}}}{{{v1}}} = \left( \frac{{{A2}}}{{{A1}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}");
 
+            st.markdown(f"Langkah logaritma untuk x:")
+            st.latex(rf"x = \frac{{\log(\frac{{{v2}}}{{{v1}}})}}{{\log(\frac{{{A2}}}{{{A1}}})}}")
             x_value = math.log(ratio_v) / math.log(ratio_A)
-            x = round(x_value)
+            x = round(x_value, 2)
 
             st.success(f"6️⃣ Orde reaksi terhadap A adalah x = {x}")
         except:
@@ -97,8 +99,10 @@ if len(pair_B) == 2:
             st.markdown("Bagian A yang dicoret karena A sama:")
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
 
+            st.markdown(f"Langkah logaritma untuk y:")
+            st.latex(rf"y = \frac{{\log(\frac{{{v2}}}{{{v1}}})}}{{\log(\frac{{{B2}}}{{{B1}}})}}")
             y_value = math.log(ratio_v) / math.log(ratio_B)
-            y = round(y_value)
+            y = round(y_value, 2)
 
             st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
         except:
@@ -108,4 +112,4 @@ if len(pair_B) == 2:
 if x is not None and y is not None:
     st.divider()
     st.header("📊 Orde Total Reaksi")
-    st.success(f"🔢 Orde total reaksi adalah x + y = {x} + {y} = {x + y}")
+    st.success(f"🔢 Orde total reaksi adalah x + y = {x} + {y} = {round(x + y, 2)}")
