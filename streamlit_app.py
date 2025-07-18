@@ -81,4 +81,12 @@ if len(pair_B) == 2:
             y = round(y_value)
 
             st.markdown(f"Persamaan substitusi:")
-            st.latex(f"
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{B2}}}{{{B1}}})^y")
+            st.markdown("Bagian yang dicoret:")
+            st.latex(rf"\cancel{{\frac{{{v2}}}{{{v1}}}}} = \left( \cancel{{\frac{{{B2}}}{{{B1}}}}} \right)^y")
+            st.success(f"Orde reaksi terhadap B adalah y = {y}")
+
+            if 'x' in locals():
+                st.info(f"🔢 Orde total reaksi adalah {x + y}")
+        except:
+            st.error("Terjadi kesalahan dalam perhitungan.")
