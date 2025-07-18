@@ -14,7 +14,7 @@ data_default = pd.DataFrame({
     'Laju (v)': [10, 20, 40],
 })
 
-data_default.index = [f"Percobaan {i+1}" for i in data_default.index]
+data_default.index = range(1, len(data_default) + 1)
 
 st.header("1️⃣ Masukkan Data Percobaan")
 st.write("Silakan masukkan konsentrasi reaktan dan laju reaksi dari beberapa eksperimen.")
@@ -32,13 +32,12 @@ if len(data) < 2:
 st.header("2️⃣ Pilih Data untuk Menentukan Orde terhadap A")
 st.markdown("Untuk menentukan orde reaksi terhadap A, pilih dua baris **dengan nilai B yang sama**")
 
-options = list(range(len(data)))
-pair_A = st.multiselect("Pilih dua baris data:", options, default=[0, 1], key="select_pair_A")
+options = list(data.index - 1)
+pair_A = st.multiselect("Pilih dua nomor baris data:", options, default=[0, 1], key="select_pair_A")
 
 x = None
 if len(pair_A) == 2:
-    idx1, idx2 = sorted(pair_A)
-    d1, d2 = data.iloc[idx1], data.iloc[idx2]
+    d1, d2 = data.iloc[pair_A[0]], data.iloc[pair_A[1]]
     if d1['[B] (M)'] != d2['[B] (M)']:
         st.error("Nilai B harus sama untuk menentukan orde terhadap A")
     else:
@@ -51,11 +50,11 @@ if len(pair_A) == 2:
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
-            ratio_v = v2 / v1
-            ratio_A = A2 / A1
+            ratio_v = v2 / v1 if v2 > v1 else v1 / v2
+            ratio_A = A2 / A1 if A2 > A1 else A1 / A2
 
             st.markdown(f"Substitusi ke dalam persamaan:")
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \\, (\\frac{{{B2}}}{{{B1}}})^y")
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
             st.markdown("Bagian B yang dicoret karena B sama:")
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \left( \frac{{{A2}}}{{{A1}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}")
 
@@ -71,12 +70,11 @@ st.divider()
 st.header("7️⃣ Pilih Data untuk Menentukan Orde terhadap B")
 st.markdown("Untuk menentukan orde reaksi terhadap B, pilih dua baris **dengan nilai A yang sama**")
 
-pair_B = st.multiselect("Pilih dua baris data:", options, default=[0, 2], key="select_pair_B")
+pair_B = st.multiselect("Pilih dua nomor baris data:", options, default=[0, 2], key="select_pair_B")
 
 y = None
 if len(pair_B) == 2:
-    idx1, idx2 = sorted(pair_B)
-    d1, d2 = data.iloc[idx1], data.iloc[idx2]
+    d1, d2 = data.iloc[pair_B[0]], data.iloc[pair_B[1]]
     if d1['[A] (M)'] != d2['[A] (M)']:
         st.error("Nilai A harus sama untuk menentukan orde terhadap B")
     else:
@@ -89,18 +87,18 @@ if len(pair_B) == 2:
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
-            ratio_v = v2 / v1
-            ratio_B = B2 / B1
+            ratio_v = v2 / v1 if v2 > v1 else v1 / v2
+            ratio_B = B2 / B1 if B2 > B1 else B1 / B2
 
             st.markdown(f"Substitusi ke dalam persamaan:")
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \\, (\\frac{{{B2}}}{{{B1}}})^y")
+            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
             st.markdown("Bagian A yang dicoret karena A sama:")
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
 
             y_value = math.log(ratio_v) / math.log(ratio_B)
             y = round(y_value)
 
-            st.success(f"🔟 Orde reaksi terhadap B adalah y = {y}")
+            st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
         except:
             st.error("Terjadi kesalahan dalam perhitungan orde terhadap B.")
 
