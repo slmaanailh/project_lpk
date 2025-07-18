@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import math
+from fractions import Fraction
 
 st.set_page_config(page_title="Penentu Orde Reaksi", layout="wide")
 st.title("🧪 Penentuan Orde Reaksi - Step by Step Wizard")
@@ -32,7 +33,7 @@ st.markdown("Pilih dua nomor baris **dengan nilai [B] yang sama**")
 
 pair_A = st.multiselect("Pilih dua nomor baris:", nomor_baris, default=[1, 2], key="select_pair_A")
 
-x = None
+x_frac = None
 if len(pair_A) == 2:
     idx1, idx2 = sorted(pair_A)
     d1 = data[data["No"] == idx1].iloc[0]
@@ -55,9 +56,8 @@ if len(pair_A) == 2:
             st.latex(rf"\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = \left( \frac{{{max(A1,A2)}}}{{{min(A1,A2)}}} \right)^x")
 
             x_value = math.log(ratio_v) / math.log(ratio_A)
-            x = round(x_value)
-
-            st.success(f"Orde reaksi terhadap A adalah x = {x} (hasil asli: {x_value:.4f})")
+            x_frac = Fraction(x_value).limit_denominator()
+            st.success(f"Orde reaksi terhadap A adalah x = {x_frac} (≈ {x_value:.4f})")
         except Exception as e:
             st.error(f"Terjadi kesalahan dalam perhitungan orde terhadap A: {e}")
 
@@ -68,7 +68,7 @@ st.markdown("Pilih dua nomor baris **dengan nilai [A] yang sama**")
 
 pair_B = st.multiselect("Pilih dua nomor baris:", nomor_baris, default=[1, 3], key="select_pair_B")
 
-y = None
+y_frac = None
 if len(pair_B) == 2:
     idx1, idx2 = sorted(pair_B)
     d1 = data[data["No"] == idx1].iloc[0]
@@ -91,16 +91,17 @@ if len(pair_B) == 2:
             st.latex(rf"\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = \left( \frac{{{max(B1,B2)}}}{{{min(B1,B2)}}} \right)^y")
 
             y_value = math.log(ratio_v) / math.log(ratio_B)
-            y = round(y_value)
-
-            st.success(f"Orde reaksi terhadap B adalah y = {y} (hasil asli: {y_value:.4f})")
+            y_frac = Fraction(y_value).limit_denominator()
+            st.success(f"Orde reaksi terhadap B adalah y = {y_frac} (≈ {y_value:.4f})")
         except Exception as e:
             st.error(f"Terjadi kesalahan dalam perhitungan orde terhadap B: {e}")
 
 # Langkah 6: Orde total
-if x is not None and y is not None:
+if x_frac is not None and y_frac is not None:
     st.divider()
     st.header("📊 Orde Total Reaksi")
-    total = x + y
-    st.success(f"🔢 Orde total reaksi adalah x + y = {x} + {y} = {total}")
-    st.info(f"📘 Persamaan laju reaksi: v = k [A]^{x} [B]^{y}")
+    total_frac = x_frac + y_frac
+    total_float = float(total_frac)
+
+    st.success(f"🔢 Orde total reaksi adalah x + y = {x_frac} + {y_frac} = {total_frac} (≈ {total_float:.4f})")
+    st.info(f"📘 Persamaan laju reaksi: v = k [A]^{x_frac} [B]^{y_frac}")
