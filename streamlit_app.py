@@ -50,13 +50,14 @@ if len(pair_A) == 2:
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
+            ratio_v = v2 / v1
+            ratio_A = A2 / A1
+
             st.markdown(f"Substitusi ke dalam persamaan:")
             st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
             st.markdown("Bagian B yang dicoret karena B sama:")
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \left( \frac{{{A2}}}{{{A1}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}")
 
-            ratio_v = v2 / v1
-            ratio_A = A2 / A1
             x_value = math.log(ratio_v) / math.log(ratio_A)
             x = round(x_value)
 
@@ -86,13 +87,14 @@ if len(pair_B) == 2:
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
+            ratio_v = v2 / v1
+            ratio_B = B2 / B1
+
             st.markdown(f"Substitusi ke dalam persamaan:")
             st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
             st.markdown("Bagian A yang dicoret karena A sama:")
             st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
 
-            ratio_v = v2 / v1
-            ratio_B = B2 / B1
             y_value = math.log(ratio_v) / math.log(ratio_B)
             y = round(y_value)
 
