@@ -37,7 +37,8 @@ pair_A = st.multiselect("Pilih dua baris data:", options, default=[0, 1], key="s
 
 x = None
 if len(pair_A) == 2:
-    d1, d2 = data.iloc[pair_A[0]], data.iloc[pair_A[1]]
+    idx1, idx2 = sorted(pair_A)
+d1, d2 = data.iloc[idx1], data.iloc[idx2]
     if d1['[B] (M)'] != d2['[B] (M)']:
         st.error("Nilai B harus sama untuk menentukan orde terhadap A")
     else:
@@ -74,7 +75,8 @@ pair_B = st.multiselect("Pilih dua baris data:", options, default=[0, 2], key="s
 
 y = None
 if len(pair_B) == 2:
-    d1, d2 = data.iloc[pair_B[0]], data.iloc[pair_B[1]]
+    idx1, idx2 = sorted(pair_B)
+d1, d2 = data.iloc[idx1], data.iloc[idx2]
     if d1['[A] (M)'] != d2['[A] (M)']:
         st.error("Nilai A harus sama untuk menentukan orde terhadap B")
     else:
