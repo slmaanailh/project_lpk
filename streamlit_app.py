@@ -52,13 +52,13 @@ if len(pair_A) == 2:
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
-            ratio_v = v2 / v1
-            ratio_A = A2 / A1
+            ratio_v = max(v1, v2) / min(v1, v2)
+            ratio_A = max(A1, A2) / min(A1, A2)
 
             st.markdown(f"Substitusi ke dalam persamaan:")
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
+            st.latex(f"\\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = (\\frac{{{max(A1,A2)}}}{{{min(A1,A2)}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
             st.markdown("Bagian B yang dicoret karena B sama:")
-            st.latex(rf"\frac{{{v2}}}{{{v1}}} = \left( \frac{{{A2}}}{{{A1}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}");
+            st.latex(rf"\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = \left( \frac{{{max(A1,A2)}}}{{{min(A1,A2)}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}")
 
             st.markdown(f"Langkah logaritma untuk x:")
             st.latex(rf"x = \frac{{\log({ratio_v:.2f})}}{{\log({ratio_A:.2f})}}")
@@ -91,13 +91,13 @@ if len(pair_B) == 2:
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
-            ratio_v = v2 / v1
-            ratio_B = B2 / B1
+            ratio_v = max(v1, v2) / min(v1, v2)
+            ratio_B = max(B1, B2) / min(B1, B2)
 
             st.markdown(f"Substitusi ke dalam persamaan:")
-            st.latex(f"\\frac{{{v2}}}{{{v1}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
+            st.latex(f"\\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{max(B1,B2)}}}{{{min(B1,B2)}}})^y")
             st.markdown("Bagian A yang dicoret karena A sama:")
-            st.latex(rf"\frac{{{v2}}}{{{v1}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{B2}}}{{{B1}}} \right)^y")
+            st.latex(rf"\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{max(B1,B2)}}}{{{min(B1,B2)}}} \right)^y")
 
             st.markdown(f"Langkah logaritma untuk y:")
             st.latex(rf"y = \frac{{\log({ratio_v:.2f})}}{{\log({ratio_B:.2f})}}")
