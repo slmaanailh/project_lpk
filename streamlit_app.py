@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import math
+from fractions import Fraction
 
 st.set_page_config(page_title="Penentu Orde Reaksi", layout="wide")
 
@@ -52,18 +53,17 @@ if len(pair_A) == 2:
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
-            ratio_v = max(v1, v2) / min(v1, v2)
-            ratio_A = max(A1, A2) / min(A1, A2)
+            ratio_v = Fraction(max(v1, v2), min(v1, v2))
+            ratio_A = Fraction(max(A1, A2), min(A1, A2))
 
             st.markdown(f"Substitusi ke dalam persamaan:")
-            st.latex(f"\\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = (\\frac{{{max(A1,A2)}}}{{{min(A1,A2)}}})^x \, (\\frac{{{B2}}}{{{B1}}})^y")
-            st.markdown("Bagian B yang dicoret karena B sama:")
-            st.latex(rf"\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = \left( \frac{{{max(A1,A2)}}}{{{min(A1,A2)}}} \right)^x \cancel{{\left( \frac{{{B2}}}{{{B1}}} \right)^y}}")
+            st.latex(f"\\frac{{{ratio_v.numerator}}}{{{ratio_v.denominator}}} = (\\frac{{{ratio_A.numerator}}}{{{ratio_A.denominator}}})^x")
+
+            x_value = math.log(float(ratio_v)) / math.log(float(ratio_A))
+            x = round(x_value, 2)
 
             st.markdown(f"Langkah logaritma untuk x:")
-            st.latex(rf"x = \frac{{\log({ratio_v:.2f})}}{{\log({ratio_A:.2f})}}")
-            x_value = math.log(ratio_v) / math.log(ratio_A)
-            x = round(x_value, 2)
+            st.latex(rf"x = \frac{{\log({float(ratio_v):.2f})}}{{\log({float(ratio_A):.2f})}}")
 
             st.success(f"6️⃣ Orde reaksi terhadap A adalah x = {x}")
         except:
@@ -91,18 +91,17 @@ if len(pair_B) == 2:
         B1, B2 = d1['[B] (M)'], d2['[B] (M)']
 
         try:
-            ratio_v = max(v1, v2) / min(v1, v2)
-            ratio_B = max(B1, B2) / min(B1, B2)
+            ratio_v = Fraction(max(v1, v2), min(v1, v2))
+            ratio_B = Fraction(max(B1, B2), min(B1, B2))
 
             st.markdown(f"Substitusi ke dalam persamaan:")
-            st.latex(f"\\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = (\\frac{{{A2}}}{{{A1}}})^x \, (\\frac{{{max(B1,B2)}}}{{{min(B1,B2)}}})^y")
-            st.markdown("Bagian A yang dicoret karena A sama:")
-            st.latex(rf"\frac{{{max(v1,v2)}}}{{{min(v1,v2)}}} = \cancel{{\left( \frac{{{A2}}}{{{A1}}} \right)^x}} \left( \frac{{{max(B1,B2)}}}{{{min(B1,B2)}}} \right)^y")
+            st.latex(f"\\frac{{{ratio_v.numerator}}}{{{ratio_v.denominator}}} = (\\frac{{{ratio_B.numerator}}}{{{ratio_B.denominator}}})^y")
+
+            y_value = math.log(float(ratio_v)) / math.log(float(ratio_B))
+            y = round(y_value, 2)
 
             st.markdown(f"Langkah logaritma untuk y:")
-            st.latex(rf"y = \frac{{\log({ratio_v:.2f})}}{{\log({ratio_B:.2f})}}")
-            y_value = math.log(ratio_v) / math.log(ratio_B)
-            y = round(y_value, 2)
+            st.latex(rf"y = \frac{{\log({float(ratio_v):.2f})}}{{\log({float(ratio_B):.2f})}}")
 
             st.success(f"11️⃣ Orde reaksi terhadap B adalah y = {y}")
         except:
