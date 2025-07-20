@@ -119,25 +119,111 @@ elif page == "📊Analisis Orde":
                 st.success(f"✅ *Orde terbaik adalah Orde {best_order}* dengan R² = {best_r2:.4f}")
                 st.markdown(f"*Model terbaik:* {best_equation}")
 
-                # 🔍 Prediksi waktu dari nilai konsentrasi
-                st.subheader("📌 Prediksi Waktu dari Nilai Konsentrasi")
-                input_conc = st.number_input("Masukkan nilai konsentrasi [A] yang ingin dicari waktunya (mol/L)", min_value=0.0, format="%.4f")
+                st.subheader("🔎 Hitung Waktu dari Konsentrasi")
+                input_conc = st.number_input("Masukkan nilai konsentrasi [A]", min_value=0.0001, step=0.01, format="%.4f")
+                if best_order == 0:
+                    y_input = input_conc
+                    rumus = f"[A] = {intercept:.4f} + {slope:.4f}·t"
+                elif best_order == 1:
+                    y_input = np.log(input_conc)
+                    rumus = f"ln[A] = {intercept:.4f} + {slope:.4f}·t"
+                elif best_order == 2:
+                    y_input = 1 / input_conc
+                    rumus = f"1/[A] = {intercept:.4f} + {slope:.4f}·t"
+                else:
+                    y_input = None
+                    rumus = "-"
 
-                if input_conc > 0:
-                    try:
-                        if best_order == 0:
-                            y_val = input_conc
-                        elif best_order == 1:
-                            y_val = np.log(input_conc)
-                        elif best_order == 2:
-                            y_val = 1 / input_conc
-
-                        waktu_prediksi = (y_val - intercept) / slope
-                        st.success(f"⏱️ Waktu yang dibutuhkan: {waktu_prediksi:.4f} satuan waktu")
-                    except Exception as e:
-                        st.error(f"Terjadi kesalahan saat menghitung waktu: {e}")
+                if y_input is not None:
+                    waktu_hitung = (y_input - intercept) / slope
+                    st.markdown(f"""
+                    #### 📘 Proses Perhitungan
+                    Rumus: {rumus}  
+                    Substitusi: t = ({y_input:.4f} - {intercept:.4f}) / {slope:.4f}  
+                    """)
+                    st.success(f"🕒 Waktu yang dibutuhkan untuk mencapai [A] = {input_conc:.4f} adalah {waktu_hitung:.4f} satuan waktu")
 
         except Exception as e:
             st.error(f"❌ Terjadi kesalahan saat memproses data: {e}")
     else:
         st.warning("⚠ Masukkan setidaknya dua pasang data valid.")
+
+# ================================
+# 🧮 PENENTUAN ORDE (DAN K)
+# ================================
+elif page == "🧮Penentuan Orde":
+    st.title("🧪 Penentuan Orde Reaksi dan Konstanta Laju (k)")
+
+    st.markdown("""
+    Masukkan data laju reaksi dan konsentrasi, lalu tentukan orde reaksi masing-masing zat.  
+    Kamu juga bisa menghitung konstanta laju reaksi (k) setelah menentukan ordes.
+    """)
+
+    data = st.data_editor(pd.DataFrame({'[A]': [], '[B]': [], 'Laju': []}), num_rows="dynamic", use_container_width=True)
+
+    if len(data.dropna()) >= 2:
+        try:
+            st.subheader("📌 Tentukan Orde Reaksi")
+            col1, col2 = st.columns(2)
+            with col1:
+                orde_A = st.selectbox("Orde reaksi terhadap A:", options=[0, 1, 2])
+            with col2:
+                orde_B = st.selectbox("Orde reaksi terhadap B:", options=[0, 1, 2])
+
+            st.subheader("🧮 Hitung Konstanta Laju (k)")
+            index_pilihan = st.number_input("Pilih baris data (indeks):", min_value=0, max_value=len(data)-1, step=1)
+
+            try:
+                row = data.iloc[int(index_pilihan)]
+                A = float(row['[A]'])
+                B = float(row['[B]'])
+                rate = float(row['Laju'])
+
+                k = rate / (A**orde_A * B**orde_B)
+
+                st.markdown(f"""
+                #### 📘 Proses Perhitungan
+                Rumus: laju = k · [A]^m · [B]^n  
+                Substitusi: {rate:.4f} = k · ({A:.4f})^{orde_A} · ({B:.4f})^{orde_B}  
+                k = {rate:.4f} / ({A:.4f}^{orde_A} · {B:.4f}^{orde_B})
+                """)
+
+                st.success(f"Konstanta laju reaksi (k) = {k:.4f}")
+            except:
+                st.error("❌ Pastikan nilai konsentrasi dan laju valid di baris tersebut.")
+
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
+    else:
+        st.warning("⚠ Masukkan minimal dua baris data.")
+
+# ================================
+# 📖 PETUNJUK
+# ================================
+elif page == "📖Petunjuk":
+    st.title("📘 Petunjuk Penggunaan Aplikasi")
+    st.markdown("""
+    1. Masuk ke halaman "📊 Analisis Orde" untuk analisis data konsentrasi & waktu.
+    2. Masukkan data secara manual.
+    3. Pilih orde reaksi yang ingin diuji (0, 1, 2).
+    4. Lihat grafik dan persamaan terbaik.
+    5. Gunakan fitur input konsentrasi untuk mencari waktu.
+
+    Atau buka "🧮 Penentuan Orde" jika kamu memiliki data laju dan ingin menentukan orde serta konstanta k.
+    """)
+
+# ================================
+# 📘 TENTANG
+# ================================
+elif page == "📘Tentang":
+    st.title("👩‍💻 Tentang Aplikasi")
+    st.markdown("""
+    **Aplikasi Kinetika Reaksi** ini dikembangkan untuk membantu mahasiswa menganalisis data eksperimen reaksi kimia.
+
+    - Dibuat dengan Python dan Streamlit
+    - Fitur utama: Analisis Orde & Perhitungan Konstanta Kinetika
+    - Developer: [Nama Kamu]
+    - Tahun: 2025
+
+    Terima kasih telah menggunakan aplikasi ini!
+    """)
