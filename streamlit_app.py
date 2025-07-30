@@ -7,17 +7,18 @@ import math
 from fractions import Fraction
 from datetime import datetime
 
+
 st.set_page_config(page_title="Kinetika Reaksi", layout="wide")
 
 # Sidebar Navigasi
 st.sidebar.title("📂 Navigasi")
-page = st.sidebar.radio("Pilih Halaman", ["🏠Beranda", "📊Analisis Orde", "🧮Penentuan Orde", "📖Petunjuk", "📘Tentang"])
+page = st.sidebar.radio("Pilih Halaman", ["🏠Beranda", "📊Analisis Orde", "🧮Penentuan Orde", "📘Tentang"])
 
 # ================================
 # 📌 BERANDA
 # ================================
 if page == "🏠Beranda":
-    st.title("📊 Aplikasi Kinetika Reaksi")
+    st.title("🏠 Aplikasi Kinetika Reaksi")
     st.markdown("""
 ### Selamat datang di Aplikasi Kinetika Reaksi!
 
@@ -33,17 +34,17 @@ Aplikasi ini dirancang untuk membantu kamu menganalisis data eksperimen reaksi k
     st.info("📂 Gunakan menu navigasi di sebelah kiri untuk mulai.")
 
 # ================================
-# ⚗ ANALISIS ORDE KINETIKA
+# ⚗️ ANALISIS ORDE KINETIKA
 # ================================
 elif page == "📊Analisis Orde":
-    st.title("🔬 Analisis Orde Reaksi Berdasarkan Data Waktu dan Konsentrasi")
+    st.title("📊 Analisis Orde Reaksi Berdasarkan Data Waktu dan Konsentrasi")
 
     st.markdown("""
     Masukkan data waktu dan konsentrasi. Program ini akan menghitung regresi linier berdasarkan model kinetika reaksi:
 
-    - *Orde 0* → [A] vs waktu  
-    - *Orde 1* → ln[A] vs waktu  
-    - *Orde 2* → 1/[A] vs waktu
+    - **Orde 0** → [A] vs waktu  
+    - **Orde 1** → ln[A] vs waktu  
+    - **Orde 2** → 1/[A] vs waktu
 
     Kemudian akan menampilkan model terbaik berdasarkan nilai R² tertinggi.
     """)
@@ -53,7 +54,6 @@ elif page == "📊Analisis Orde":
 
     slope = None
     best_order = None
-    intercept = None
 
     if len(data.dropna()) >= 2:
         try:
@@ -77,13 +77,13 @@ elif page == "📊Analisis Orde":
                     label = "[A]"
                 elif order == 1:
                     if np.any(konsentrasi <= 0):
-                        st.warning("⚠ Tidak dapat menghitung ln(Konsentrasi) karena ada nilai ≤ 0.")
+                        st.warning("⚠️ Tidak dapat menghitung ln(Konsentrasi) karena ada nilai ≤ 0.")
                         continue
                     y_trans = np.log(konsentrasi)
                     label = "ln[A]"
                 elif order == 2:
                     if np.any(konsentrasi == 0):
-                        st.warning("⚠ Tidak dapat menghitung 1/Konsentrasi karena ada nilai = 0.")
+                        st.warning("⚠️ Tidak dapat menghitung 1/Konsentrasi karena ada nilai = 0.")
                         continue
                     y_trans = 1 / konsentrasi
                     label = "1/[A]"
@@ -91,15 +91,14 @@ elif page == "📊Analisis Orde":
                     continue
 
                 coeffs = np.polyfit(waktu, y_trans, 1)
-                slope_tmp, intercept_tmp = coeffs
-                y_pred = slope_tmp * waktu + intercept_tmp
+                slope_tmp, intercept = coeffs
+                y_pred = slope_tmp * waktu + intercept
                 r2 = r2_score(y_trans, y_pred)
 
                 if r2 > best_r2:
                     best_r2 = r2
                     best_order = order
                     slope = slope_tmp
-                    intercept = intercept_tmp
                     best_equation = f"{label} = {intercept:.4f} + {slope:.4f}·waktu"
 
                 ax.plot(waktu, y_trans, 'o', color=colors[order], label=f"Orde {order} Data")
@@ -107,8 +106,8 @@ elif page == "📊Analisis Orde":
 
                 st.markdown(f"""
                 ### Orde {order}  
-                Transformasi: {label} = {intercept_tmp:.4f} + {slope_tmp:.4f}·waktu  
-                R² = {r2:.4f}
+                Transformasi: `{label} = {intercept:.4f} + {slope_tmp:.4f}·waktu`  
+                R² = `{r2:.4f}`
                 """)
 
             ax.legend()
@@ -116,114 +115,196 @@ elif page == "📊Analisis Orde":
             st.pyplot(fig)
 
             if best_order is not None:
-                st.success(f"✅ *Orde terbaik adalah Orde {best_order}* dengan R² = {best_r2:.4f}")
-                st.markdown(f"*Model terbaik:* {best_equation}")
-
-                st.subheader("🔎 Hitung Waktu dari Konsentrasi")
-                input_conc = st.number_input("Masukkan nilai konsentrasi [A]", min_value=0.0001, step=0.01, format="%.4f")
-                if best_order == 0:
-                    y_input = input_conc
-                    rumus = f"[A] = {intercept:.4f} + {slope:.4f}·t"
-                elif best_order == 1:
-                    y_input = np.log(input_conc)
-                    rumus = f"ln[A] = {intercept:.4f} + {slope:.4f}·t"
-                elif best_order == 2:
-                    y_input = 1 / input_conc
-                    rumus = f"1/[A] = {intercept:.4f} + {slope:.4f}·t"
-                else:
-                    y_input = None
-                    rumus = "-"
-
-                if y_input is not None:
-                    waktu_hitung = (y_input - intercept) / slope
-                    st.markdown(f"""
-                    #### 📘 Proses Perhitungan
-                    Rumus: {rumus}  
-                    Substitusi: t = ({y_input:.4f} - {intercept:.4f}) / {slope:.4f}  
-                    """)
-                    st.success(f"🕒 Waktu yang dibutuhkan untuk mencapai [A] = {input_conc:.4f} adalah {waktu_hitung:.4f} satuan waktu")
+                st.success(f"✅ **Orde terbaik adalah Orde {best_order}** dengan R² = `{best_r2:.4f}`")
+                st.markdown(f"**Model terbaik:** `{best_equation}`")
 
         except Exception as e:
             st.error(f"❌ Terjadi kesalahan saat memproses data: {e}")
     else:
-        st.warning("⚠ Masukkan setidaknya dua pasang data valid.")
+        st.warning("⚠️ Masukkan setidaknya dua pasang data valid.")
 
+    if slope is not None and best_order is not None:
+        st.subheader("⏳ Waktu Paruh dan Kadaluarsa")
+        st.markdown("Perhitungan ini menggunakan nilai slope regresi sebagai konstanta laju reaksi `k`.")
+
+        A0_input = st.number_input("Konsentrasi awal [A₀] (mol/L)", min_value=0.0, format="%.4f", value=0.0 if len(data.dropna()) == 0 else float(data['Konsentrasi'].iloc[0]))
+        k_input = abs(slope)
+        st.markdown(f"**Nilai k (konstanta laju)** diambil dari slope regresi: `k = {k_input:.6f}`")
+
+        if k_input > 0 and (A0_input > 0 or best_order == 1):
+            if best_order == 0:
+                t_half = A0_input / (2 * k_input)
+                t_90 = 0.1 * A0_input / k_input
+            elif best_order == 1:
+                t_half = math.log(2) / k_input
+                t_90 = 0.105 / k_input
+            elif best_order == 2:
+                t_half = 1 / (k_input * A0_input)
+                t_90 = 1 / (9 * k_input * A0_input)
+
+            st.markdown("### 📉 Hasil Perhitungan:")
+            st.latex(f"t_{{1/2}} = {t_half:.4f} \\, \\text{{(waktu agar [A] tinggal setengah)}}")
+            st.latex(f"t_{{90}} = {t_90:.4f} \\, \\text{{(waktu agar [A] tinggal 10\\%)}}")
+        else:
+            st.warning("Masukkan nilai [A₀] > 0 (tidak boleh nol).")
+            
 # ================================
-# 🧮 PENENTUAN ORDE (DAN K)
+# 🧮 PENENTUAN ORDE REAKSI
 # ================================
 elif page == "🧮Penentuan Orde":
-    st.title("🧪 Penentuan Orde Reaksi dan Konstanta Laju (k)")
+    st.title("🧮 Penentuan Orde Reaksi")
 
-    st.markdown("""
-    Masukkan data laju reaksi dan konsentrasi, lalu tentukan orde reaksi masing-masing zat.  
-    Kamu juga bisa menghitung konstanta laju reaksi (k) setelah menentukan ordes.
-    """)
+    data_default = pd.DataFrame({
+        '[A] (M)': [],
+        '[B] (M)': [],
+        'Laju (v)': [],
+    })
+    st.subheader("Masukkan Data Percobaan")
+    data = st.data_editor(data_default, num_rows="dynamic", use_container_width=True, key="data_input")
 
-    data = st.data_editor(pd.DataFrame({'[A]': [], '[B]': [], 'Laju': []}), num_rows="dynamic", use_container_width=True)
-
-    if len(data.dropna()) >= 2:
-        try:
-            st.subheader("📌 Tentukan Orde Reaksi")
-            col1, col2 = st.columns(2)
-            with col1:
-                orde_A = st.selectbox("Orde reaksi terhadap A:", options=[0, 1, 2])
-            with col2:
-                orde_B = st.selectbox("Orde reaksi terhadap B:", options=[0, 1, 2])
-
-            st.subheader("🧮 Hitung Konstanta Laju (k)")
-            index_pilihan = st.number_input("Pilih baris data (indeks):", min_value=0, max_value=len(data)-1, step=1)
-
-            try:
-                row = data.iloc[int(index_pilihan)]
-                A = float(row['[A]'])
-                B = float(row['[B]'])
-                rate = float(row['Laju'])
-
-                k = rate / (A**orde_A * B**orde_B)
-
-                st.markdown(f"""
-                #### 📘 Proses Perhitungan
-                Rumus: laju = k · [A]^m · [B]^n  
-                Substitusi: {rate:.4f} = k · ({A:.4f})^{orde_A} · ({B:.4f})^{orde_B}  
-                k = {rate:.4f} / ({A:.4f}^{orde_A} · {B:.4f}^{orde_B})
-                """)
-
-                st.success(f"Konstanta laju reaksi (k) = {k:.4f}")
-            except:
-                st.error("❌ Pastikan nilai konsentrasi dan laju valid di baris tersebut.")
-
-        except Exception as e:
-            st.error(f"❌ Error: {e}")
+    if len(data) > 0:
+        data = data.reset_index(drop=True)
+        data["No"] = data.index + 1
+        nomor_baris = data["No"].tolist()
     else:
-        st.warning("⚠ Masukkan minimal dua baris data.")
+        nomor_baris = []
 
-# ================================
-# 📖 PETUNJUK
-# ================================
-elif page == "📖Petunjuk":
-    st.title("📘 Petunjuk Penggunaan Aplikasi")
-    st.markdown("""
-    1. Masuk ke halaman "📊 Analisis Orde" untuk analisis data konsentrasi & waktu.
-    2. Masukkan data secara manual.
-    3. Pilih orde reaksi yang ingin diuji (0, 1, 2).
-    4. Lihat grafik dan persamaan terbaik.
-    5. Gunakan fitur input konsentrasi untuk mencari waktu.
+    if len(nomor_baris) < 2:
+        st.warning("Masukkan minimal 2 baris data valid untuk melanjutkan.")
+        st.stop()
 
-    Atau buka "🧮 Penentuan Orde" jika kamu memiliki data laju dan ingin menentukan orde serta konstanta k.
-    """)
+    st.subheader("Pilih Data untuk Orde terhadap A")
+    default_pair_A = [1, 2] if all(x in nomor_baris for x in [1, 2]) else []
+    pair_A = st.multiselect("Pilih dua baris dengan [B] sama:", nomor_baris, default=default_pair_A, key="select_pair_A")
 
+    x_frac = None
+    if len(pair_A) == 2:
+        idx1, idx2 = sorted(pair_A)
+        d1 = data[data["No"] == idx1].iloc[0]
+        d2 = data[data["No"] == idx2].iloc[0]
+
+        if d1['[B] (M)'] != d2['[B] (M)']:
+            st.error("Nilai [B] harus sama.")
+        else:
+            try:
+                v1, v2 = d1['Laju (v)'], d2['Laju (v)']
+                A1, A2 = d1['[A] (M)'], d2['[A] (M)']
+                if A1 == A2:
+                    st.error("Nilai [A] tidak boleh sama untuk menghitung orde terhadap A.")
+                else:
+                    ratio_v = max(v1, v2) / min(v1, v2)
+                    ratio_A = max(A1, A2) / min(A1, A2)
+                    x_val = math.log(ratio_v) / math.log(ratio_A)
+                    x_frac = Fraction(x_val).limit_denominator()
+                    st.success(f"Orde terhadap A = {x_frac} (≈ {x_val:.4f})")
+            except Exception as e:
+                st.error(f"Kesalahan perhitungan: {e}")
+
+    st.subheader("Pilih Data untuk Orde terhadap B")
+    default_pair_B = [1, 3] if all(x in nomor_baris for x in [1, 3]) else []
+    pair_B = st.multiselect("Pilih dua baris dengan [A] sama:", nomor_baris, default=default_pair_B, key="select_pair_B")
+
+    y_frac = None
+    if len(pair_B) == 2:
+        idx1, idx2 = sorted(pair_B)
+        d1 = data[data["No"] == idx1].iloc[0]
+        d2 = data[data["No"] == idx2].iloc[0]
+
+        if d1['[A] (M)'] != d2['[A] (M)']:
+            st.error("Nilai [A] harus sama.")
+        else:
+            try:
+                v1, v2 = d1['Laju (v)'], d2['Laju (v)']
+                B1, B2 = d1['[B] (M)'], d2['[B] (M)']
+                if B1 == B2:
+                    st.error("Nilai [B] tidak boleh sama untuk menghitung orde terhadap B.")
+                else:
+                    ratio_v = max(v1, v2) / min(v1, v2)
+                    ratio_B = max(B1, B2) / min(B1, B2)
+                    y_val = math.log(ratio_v) / math.log(ratio_B)
+                    y_frac = Fraction(y_val).limit_denominator()
+                    st.success(f"Orde terhadap B = {y_frac} (≈ {y_val:.4f})")
+            except Exception as e:
+                st.error(f"Kesalahan perhitungan: {e}")
+                
+    # ====================
+    # ORDE TOTAL
+    # ====================
+    if x_frac is not None and y_frac is not None:
+        total = x_frac + y_frac
+        st.subheader("Orde Total Reaksi")
+        st.success(f"Total Orde = {x_frac} + {y_frac} = {total} (≈ {float(total):.4f})")
+        st.info(f"Persamaan laju: v = k [A]^{x_frac} [B]^{y_frac}")
+
+        
 # ================================
 # 📘 TENTANG
 # ================================
 elif page == "📘Tentang":
-    st.title("👩‍💻 Tentang Aplikasi")
-    st.markdown("""
-    **Aplikasi Kinetika Reaksi** ini dikembangkan untuk membantu mahasiswa menganalisis data eksperimen reaksi kimia.
+    st.title("📘Tentang Kinetika Reaksi")
 
-    - Dibuat dengan Python dan Streamlit
-    - Fitur utama: Analisis Orde & Perhitungan Konstanta Kinetika
-    - Developer: [Nama Kamu]
-    - Tahun: 2025
+    tab1, tab2 = st.tabs(["Tentang Website", "Dasar Teori"])
 
-    Terima kasih telah menggunakan aplikasi ini!
-    """)
+    with tab1:
+        st.subheader("Tentang Website")
+        st.markdown("""
+Aplikasi ini dikembangkan untuk membantu mahasiswa dan pelajar dalam memahami **kinetika reaksi** melalui pendekatan data eksperimen.  
+Fitur yang tersedia antara lain:
+- Analisis regresi untuk menentukan orde reaksi
+- Penentuan orde reaksi berdasarkan data laju
+- Perhitungan waktu paruh dan waktu kadaluarsa
+- Visualisasi grafik transformasi konsentrasi
+
+Website ini dibuat dengan **Streamlit**, menggunakan pustaka Python seperti `numpy`, `pandas`, `matplotlib`, dan `scikit-learn`.
+
+**Website Ini Dikembangkan Oleh Kelompok 4 (1B)**
+1. Affan Fakhri Izzudin
+2. Dhirga Fayzul Haq
+3. Laudya Calista Ardelia Ramadhani
+4. Neha Atsana Putri Ahmad
+5. Salma Nailah Putri
+""")
+
+    with tab2:
+        st.header("🔬 Dasar Teori Kinetika Reaksi")
+        st.markdown(r"""
+Kinetika reaksi adalah cabang ilmu kimia yang mempelajari suatu reaksi kimia. Kinetika reaksi menerangkan dua hal yaitu mekanisme reaksi dan laju reaksi. Pengertian mekanisme reaksi adalah dipakai untuk menerangkan langkah-langkah dimana suatu reaktan menjadi produk. Laju reaksi adalah perubahan konsentrasi pereaksi ataupun suatu produk dalam suatu satuan waktu.
+
+Laju menyatakan seberapa cepat atau seberapa lambat suatu proses berlangsung. Laju menyatakan besarnya perubahan yang terjadi dalam satu satuan waktu. Reaksi kimia adalah proses perubahan zat pereaksi menjadi produk. Seiring dengan bertambahnya waktu reaksi, maka jumlah zat pereaksi semakin sedikit, sedangkan produk semakin banyak. Laju reaksi dinyatakan sebagai laju berkurangnya pereaksi atau laju terbentuknya produk. Kecepatan reaksi kimia ditentukan oleh orde reaksi, yaitu jumlah dari eksponen konsentrasi pada persamaan kecepatan reaksi. Orde suatu reaksi ialah jumlah semua eksponen dari konsentrasi dalam persamaan laju. Orde reaksi juga menyatakan besarnya pengaruh konsentrasi reaktan (pereaksi) terhadap laju reaksi.
+
+Dengan persamaan:
+
+$$
+v = k[A]^x[B]^y
+$$
+
+Di mana:
+- \( v \) = laju reaksi  
+- \( k \) = konstanta laju  
+- \( x, y \) = orde reaksi terhadap A dan B  
+- \( [A], [B] \) = konsentrasi reaktan  
+
+**Faktor yang Mempengaruhi Laju Reaksi**
+Laju reaksi kimia dapat dipengaruhi oleh beberapa faktor. Setiap faktor ini dapat mempercepat atau memperlambat proses perubahan kimia yang terjadi.
+
+**1. Konsentrasi:**
+Konsentrasi reaktan yang lebih tinggi meningkatkan laju reaksi.
+Partikel yang lebih banyak membuat tumbukan antar partikel menjadi lebih sering, sehingga memperbesar kemungkinan terjadinya reaksi kimia.
+
+**2. Suhu:**
+Kenaikan suhu mempercepat laju reaksi.
+Suhu yang lebih tinggi menyebabkan energi kinetik partikel bertambah, sehingga tumbukan lebih sering dan lebih efektif terjadi.
+Secara umum, laju reaksi dapat meningkat dua kali lipat setiap kenaikan suhu sebesar 10°C.
+
+**3. Luas Permukaan:**
+Luas permukaan padatan yang lebih besar (misalnya, dalam bentuk serbuk halus) mempercepat reaksi.
+Semakin luas permukaan bidang sentuh antar partikel, maka semakin besar peluang tumbukan yang efektif.
+
+**4. Katalis:**
+zat yang mempercepat laju reaksi tanpa ikut bereaksi secara permanen.
+Katalis bekerja dengan menurunkan energi aktivasi yang dibutuhkan reaksi, sehingga reaksi berlangsung lebih cepat.
+Katalis positif mempercepat reaksi, sedangkan katalis negatif (inhibitor) menghambat reaksi.
+
+**5. Tekanan (Khusus Gas):**
+Pada reaksi yang melibatkan gas, peningkatan tekanan akan meningkatkan laju reaksi dengan membuat molekul gas menjadi lebih rapat sehingga tumbukan antar molekul meningkat.
+""")
