@@ -34,7 +34,7 @@ Aplikasi ini dirancang untuk membantu kamu menganalisis data eksperimen reaksi k
     st.info("📂 Gunakan menu navigasi di sebelah kiri untuk mulai.")
 
 # ================================
-# ⚗️ ANALISIS ORDE KINETIKA
+# ⚗ ANALISIS ORDE KINETIKA
 # ================================
 elif page == "📊Analisis Orde":
     st.title("📊 Analisis Orde Reaksi Berdasarkan Data Waktu dan Konsentrasi")
@@ -42,9 +42,9 @@ elif page == "📊Analisis Orde":
     st.markdown("""
     Masukkan data waktu dan konsentrasi. Program ini akan menghitung regresi linier berdasarkan model kinetika reaksi:
 
-    - **Orde 0** → [A] vs waktu  
-    - **Orde 1** → ln[A] vs waktu  
-    - **Orde 2** → 1/[A] vs waktu
+    - *Orde 0* → [A] vs waktu  
+    - *Orde 1* → ln[A] vs waktu  
+    - *Orde 2* → 1/[A] vs waktu
 
     Kemudian akan menampilkan model terbaik berdasarkan nilai R² tertinggi.
     """)
@@ -77,13 +77,13 @@ elif page == "📊Analisis Orde":
                     label = "[A]"
                 elif order == 1:
                     if np.any(konsentrasi <= 0):
-                        st.warning("⚠️ Tidak dapat menghitung ln(Konsentrasi) karena ada nilai ≤ 0.")
+                        st.warning("⚠ Tidak dapat menghitung ln(Konsentrasi) karena ada nilai ≤ 0.")
                         continue
                     y_trans = np.log(konsentrasi)
                     label = "ln[A]"
                 elif order == 2:
                     if np.any(konsentrasi == 0):
-                        st.warning("⚠️ Tidak dapat menghitung 1/Konsentrasi karena ada nilai = 0.")
+                        st.warning("⚠ Tidak dapat menghitung 1/Konsentrasi karena ada nilai = 0.")
                         continue
                     y_trans = 1 / konsentrasi
                     label = "1/[A]"
@@ -106,8 +106,8 @@ elif page == "📊Analisis Orde":
 
                 st.markdown(f"""
                 ### Orde {order}  
-                Transformasi: `{label} = {intercept:.4f} + {slope_tmp:.4f}·waktu`  
-                R² = `{r2:.4f}`
+                Transformasi: {label} = {intercept:.4f} + {slope_tmp:.4f}·waktu  
+                R² = {r2:.4f}
                 """)
 
             ax.legend()
@@ -115,21 +115,21 @@ elif page == "📊Analisis Orde":
             st.pyplot(fig)
 
             if best_order is not None:
-                st.success(f"✅ **Orde terbaik adalah Orde {best_order}** dengan R² = `{best_r2:.4f}`")
-                st.markdown(f"**Model terbaik:** `{best_equation}`")
+                st.success(f"✅ *Orde terbaik adalah Orde {best_order}* dengan R² = {best_r2:.4f}")
+                st.markdown(f"*Model terbaik:* {best_equation}")
 
         except Exception as e:
             st.error(f"❌ Terjadi kesalahan saat memproses data: {e}")
     else:
-        st.warning("⚠️ Masukkan setidaknya dua pasang data valid.")
+        st.warning("⚠ Masukkan setidaknya dua pasang data valid.")
 
     if slope is not None and best_order is not None:
         st.subheader("⏳ Waktu Paruh dan Kadaluarsa")
-        st.markdown("Perhitungan ini menggunakan nilai slope regresi sebagai konstanta laju reaksi `k`.")
+        st.markdown("Perhitungan ini menggunakan nilai slope regresi sebagai konstanta laju reaksi k.")
 
         A0_input = st.number_input("Konsentrasi awal [A₀] (mol/L)", min_value=0.0, format="%.4f", value=0.0 if len(data.dropna()) == 0 else float(data['Konsentrasi'].iloc[0]))
         k_input = abs(slope)
-        st.markdown(f"**Nilai k (konstanta laju)** diambil dari slope regresi: `k = {k_input:.6f}`")
+        st.markdown(f"*Nilai k (konstanta laju)* diambil dari slope regresi: k = {k_input:.6f}")
 
         if k_input > 0 and (A0_input > 0 or best_order == 1):
             if best_order == 0:
@@ -248,16 +248,16 @@ elif page == "📘Tentang":
     with tab1:
         st.subheader("Tentang Website")
         st.markdown("""
-Aplikasi ini dikembangkan untuk membantu mahasiswa dan pelajar dalam memahami **kinetika reaksi** melalui pendekatan data eksperimen.  
+Aplikasi ini dikembangkan untuk membantu mahasiswa dan pelajar dalam memahami *kinetika reaksi* melalui pendekatan data eksperimen.  
 Fitur yang tersedia antara lain:
 - Analisis regresi untuk menentukan orde reaksi
 - Penentuan orde reaksi berdasarkan data laju
 - Perhitungan waktu paruh dan waktu kadaluarsa
 - Visualisasi grafik transformasi konsentrasi
 
-Website ini dibuat dengan **Streamlit**, menggunakan pustaka Python seperti `numpy`, `pandas`, `matplotlib`, dan `scikit-learn`.
+Website ini dibuat dengan *Streamlit*, menggunakan pustaka Python seperti numpy, pandas, matplotlib, dan scikit-learn.
 
-**Website Ini Dikembangkan Oleh Kelompok 4 (1B)**
+*Website Ini Dikembangkan Oleh Kelompok 4 (1B)*
 1. Affan Fakhri Izzudin
 2. Dhirga Fayzul Haq
 3. Laudya Calista Ardelia Ramadhani
@@ -284,27 +284,28 @@ Di mana:
 - \( x, y \) = orde reaksi terhadap A dan B  
 - \( [A], [B] \) = konsentrasi reaktan  
 
-**Faktor yang Mempengaruhi Laju Reaksi**
+*Faktor yang Mempengaruhi Laju Reaksi*
 Laju reaksi kimia dapat dipengaruhi oleh beberapa faktor. Setiap faktor ini dapat mempercepat atau memperlambat proses perubahan kimia yang terjadi.
 
-**1. Konsentrasi:**
+*1. Konsentrasi:*
 Konsentrasi reaktan yang lebih tinggi meningkatkan laju reaksi.
 Partikel yang lebih banyak membuat tumbukan antar partikel menjadi lebih sering, sehingga memperbesar kemungkinan terjadinya reaksi kimia.
 
-**2. Suhu:**
+*2. Suhu:*
 Kenaikan suhu mempercepat laju reaksi.
 Suhu yang lebih tinggi menyebabkan energi kinetik partikel bertambah, sehingga tumbukan lebih sering dan lebih efektif terjadi.
 Secara umum, laju reaksi dapat meningkat dua kali lipat setiap kenaikan suhu sebesar 10°C.
 
-**3. Luas Permukaan:**
+*3. Luas Permukaan:*
 Luas permukaan padatan yang lebih besar (misalnya, dalam bentuk serbuk halus) mempercepat reaksi.
 Semakin luas permukaan bidang sentuh antar partikel, maka semakin besar peluang tumbukan yang efektif.
 
-**4. Katalis:**
+*4. Katalis:*
 zat yang mempercepat laju reaksi tanpa ikut bereaksi secara permanen.
 Katalis bekerja dengan menurunkan energi aktivasi yang dibutuhkan reaksi, sehingga reaksi berlangsung lebih cepat.
 Katalis positif mempercepat reaksi, sedangkan katalis negatif (inhibitor) menghambat reaksi.
 
-**5. Tekanan (Khusus Gas):**
+*5. Tekanan (Khusus Gas):*
 Pada reaksi yang melibatkan gas, peningkatan tekanan akan meningkatkan laju reaksi dengan membuat molekul gas menjadi lebih rapat sehingga tumbukan antar molekul meningkat.
 """)
+        
