@@ -265,58 +265,76 @@ Website ini dibuat dengan *Streamlit*, menggunakan pustaka Python seperti numpy,
 5. Salma Nailah Putri
 """)
 
-   with tab2:
-    st.markdown("""
-    <div style='text-align: justify; font-family: Arial, sans-serif; color: #2C3E50;'>
+    
+    with tab2:
+        st.markdown("""
+        <div style='text-align: justify; font-family: Arial, sans-serif; color: #2C3E50; line-height: 1.6;'>
 
-    <h2 style='color: #2C3E50;'>🔬 Dasar Teori Kinetika Reaksi</h2>
+        <h2 style='color: #2C3E50;'>🔬 Dasar Teori Kinetika Reaksi</h2>
 
-    <p>Kinetika reaksi merupakan cabang ilmu kimia yang mempelajari <strong>mekanisme reaksi</strong> dan <strong>laju reaksi</strong>.</p>
+        <p style='text-indent: 30px;'>
+        Kinetika reaksi merupakan cabang ilmu kimia yang mempelajari <strong>mekanisme reaksi</strong> dan <strong>laju reaksi</strong>.
+        Mekanisme reaksi menjelaskan tahapan-tahapan perubahan dari reaktan menjadi produk, sedangkan laju reaksi menunjukkan perubahan konsentrasi terhadap waktu.
+        </p>
 
-    <ul>
-        <li><strong>Mekanisme reaksi</strong>: menjelaskan langkah-langkah reaktan berubah menjadi produk.</li>
-        <li><strong>Laju reaksi</strong>: perubahan konsentrasi reaktan atau produk per satuan waktu.</li>
-    </ul>
+        <p style='text-indent: 30px;'>
+        Selama reaksi berlangsung, konsentrasi reaktan akan berkurang dan konsentrasi produk akan bertambah. Oleh karena itu, laju reaksi dapat dinyatakan sebagai:
+        </p>
 
-    <p>Seiring waktu, jumlah reaktan <strong>berkurang</strong> dan produk <strong>bertambah</strong>. Laju reaksi dapat dinyatakan sebagai:</p>
+        <blockquote style="background-color: #f8f9fa; padding: 10px; border-left: 4px solid #3498db; text-indent: 0;">
+            Laju berkurangnya reaktan atau laju terbentuknya produk.
+        </blockquote>
 
-    <blockquote style="background-color: #f8f9fa; padding: 10px; border-left: 4px solid #3498db;">
-        Laju berkurangnya reaktan atau laju terbentuknya produk.
-    </blockquote>
+        <h4>📈 Persamaan Umum Laju Reaksi:</h4>
+        <p style="text-align: center; font-size: 22px;">
+            <em>v = k[A]<sup>x</sup>[B]<sup>y</sup></em>
+        </p>
 
-    <h4>📈 Persamaan Umum Laju Reaksi:</h4>
-    <p style="text-align: center; font-size: 22px;">
-        <em>v = k[A]<sup>x</sup>[B]<sup>y</sup></em>
-    </p>
+        <p style='text-indent: 30px;'>
+        Keterangan:
+        </p>
+        <ul style='margin-left: 30px;'>
+            <li><b>v</b> = laju reaksi</li>
+            <li><b>k</b> = konstanta laju reaksi</li>
+            <li><b>[A], [B]</b> = konsentrasi reaktan</li>
+            <li><b>x, y</b> = orde reaksi terhadap A dan B</li>
+        </ul>
 
-    <p><strong>Keterangan:</strong></p>
-    <ul>
-        <li><b>v</b> = laju reaksi</li>
-        <li><b>k</b> = konstanta laju reaksi</li>
-        <li><b>[A], [B]</b> = konsentrasi reaktan</li>
-        <li><b>x, y</b> = orde reaksi terhadap A dan B</li>
-    </ul>
+        <p style='text-indent: 30px;'>
+        Jumlah eksponen <em>x + y</em> disebut <strong>orde total reaksi</strong> yang menyatakan pengaruh konsentrasi terhadap laju reaksi.
+        </p>
 
-    <p>Jumlah eksponen <em>x + y</em> disebut <strong>orde total reaksi</strong>, yang menunjukkan pengaruh konsentrasi terhadap laju reaksi.</p>
+        <hr style="border-top: 1px solid #ccc;" />
 
-    <hr style="border-top: 1px solid #ccc;" />
+        <h3 style="color: #34495e;">⚙ Faktor yang Mempengaruhi Laju Reaksi</h3>
 
-    <h3 style="color: #34495e;">⚙ Faktor yang Mempengaruhi Laju Reaksi</h3>
+        <ol style='margin-left: 15px;'>
+            <li><p style='text-indent: 30px;'>
+                <strong>📌 Konsentrasi:</strong> Semakin tinggi konsentrasi reaktan, semakin sering terjadi tumbukan antar partikel, sehingga mempercepat reaksi.
+            </p></li>
 
-    <ol>
-        <li><strong>📌 Konsentrasi:</strong> Konsentrasi lebih tinggi meningkatkan peluang tumbukan antar partikel, sehingga mempercepat reaksi.</li>
-        <li><strong>🌡 Suhu:</strong> Suhu tinggi → energi kinetik partikel meningkat → tumbukan lebih sering dan efektif.
-            <br><em>(Setiap kenaikan suhu 10°C dapat melipatgandakan laju reaksi)</em>
-        </li>
-        <li><strong>📐 Luas Permukaan:</strong> Padatan berbentuk serbuk memiliki lebih banyak permukaan kontak → laju reaksi meningkat.</li>
-        <li><strong>⚗ Katalis:</strong> Zat yang mempercepat atau memperlambat reaksi tanpa ikut bereaksi secara permanen.
-            <ul>
-                <li><strong>Katalis positif</strong>: mempercepat reaksi</li>
-                <li><strong>Inhibitor (katalis negatif)</strong>: menghambat reaksi</li>
-            </ul>
-        </li>
-        <li><strong>💨 Tekanan (untuk gas):</strong> Tekanan tinggi → molekul gas lebih rapat → tumbukan meningkat → reaksi lebih cepat.</li>
-    </ol>
+            <li><p style='text-indent: 30px;'>
+                <strong>🌡 Suhu:</strong> Peningkatan suhu menyebabkan partikel memiliki energi kinetik yang lebih besar, sehingga tumbukan menjadi lebih sering dan efektif.
+                <br><em style="margin-left:30px;">Setiap kenaikan suhu 10°C dapat melipatgandakan laju reaksi.</em>
+            </p></li>
 
-    </div>
-    """, unsafe_allow_html=True)
+            <li><p style='text-indent: 30px;'>
+                <strong>📐 Luas Permukaan:</strong> Partikel padatan yang lebih halus memiliki permukaan lebih luas → memperbesar peluang tumbukan antar partikel → mempercepat laju reaksi.
+            </p></li>
+
+            <li><p style='text-indent: 30px;'>
+                <strong>⚗ Katalis:</strong> Zat yang mempercepat atau memperlambat reaksi tanpa ikut bereaksi secara permanen.
+                <ul style='margin-left: 20px;'>
+                    <li><strong>Katalis positif</strong>: mempercepat reaksi</li>
+                    <li><strong>Inhibitor (katalis negatif)</strong>: memperlambat reaksi</li>
+                </ul>
+                <p style='text-indent: 30px;'>Katalis bekerja dengan menurunkan energi aktivasi reaksi.</p>
+            </p></li>
+
+            <li><p style='text-indent: 30px;'>
+                <strong>💨 Tekanan (untuk gas):</strong> Pada reaksi gas, tekanan tinggi memperkecil volume, membuat molekul lebih rapat, dan meningkatkan frekuensi tumbukan efektif.
+            </p></li>
+        </ol>
+
+        </div>
+        """, unsafe_allow_html=True)
