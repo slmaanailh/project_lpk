@@ -290,33 +290,39 @@ Laju menyatakan seberapa cepat atau seberapa lambat suatu proses berlangsung. La
     <li><strong>([A], [B])</strong> = konsentrasi reaktan</li>
 </ul>
 
+### ⚙️ Faktor-faktor yang Mempengaruhi Laju Reaksi
+
 <p style='text-align: justify; text-indent: 40px;'>
-<strong>Faktor yang Mempengaruhi Laju Reaksi</strong><br>
-Laju reaksi kimia dapat dipengaruhi oleh beberapa faktor. Setiap faktor ini dapat mempercepat atau memperlambat proses perubahan kimia yang terjadi.
+Laju reaksi dipengaruhi oleh beberapa faktor berikut:
 </p>
 
-<ol style='margin-left: 20px; text-align: justify;'>
-    <li>
-        <strong>Konsentrasi:</strong> Konsentrasi reaktan yang lebih tinggi meningkatkan laju reaksi. 
-        Partikel yang lebih banyak membuat tumbukan antar partikel menjadi lebih sering, sehingga memperbesar kemungkinan terjadinya reaksi kimia.
-    </li><br>
-    <li>
-        <strong>Suhu:</strong> Kenaikan suhu mempercepat laju reaksi. 
-        Suhu yang lebih tinggi menyebabkan energi kinetik partikel bertambah, sehingga tumbukan lebih sering dan lebih efektif terjadi. 
-        <em>Secara umum, laju reaksi dapat meningkat dua kali lipat setiap kenaikan suhu sebesar 10°C.</em>
-    </li><br>
-    <li>
-        <strong>Luas Permukaan:</strong> Luas permukaan padatan yang lebih besar (misalnya, dalam bentuk serbuk halus) mempercepat reaksi. 
-        Semakin luas permukaan bidang sentuh antar partikel, maka semakin besar peluang tumbukan yang efektif.
-    </li><br>
-    <li>
-        <strong>Katalis:</strong> Zat yang mempercepat laju reaksi tanpa ikut bereaksi secara permanen. 
-        Katalis bekerja dengan menurunkan energi aktivasi yang dibutuhkan reaksi, sehingga reaksi berlangsung lebih cepat. 
-        Katalis positif mempercepat reaksi, sedangkan katalis negatif (inhibitor) menghambat reaksi.
-    </li><br>
-    <li>
-        <strong>Tekanan (Khusus Gas):</strong> Pada reaksi yang melibatkan gas, peningkatan tekanan akan meningkatkan laju reaksi 
-        dengan membuat molekul gas menjadi lebih rapat sehingga tumbukan antar molekul meningkat.
-    </li>
-</ol>
+**1. 📌 Konsentrasi**  
+<p style='text-align: justify; text-indent: 40px;'>
+Semakin tinggi konsentrasi reaktan → lebih banyak partikel → lebih sering tumbukan → reaksi lebih cepat.
+</p>
+
+**2. 🌡 Suhu**  
+<p style='text-align: justify; text-indent: 40px;'>
+Suhu tinggi → energi kinetik meningkat → tumbukan lebih sering dan efektif.  
+<em>Laju reaksi bisa meningkat 2× setiap kenaikan suhu 10°C.</em>
+</p>
+
+**3. 📐 Luas Permukaan**  
+<p style='text-align: justify; text-indent: 40px;'>
+Padatan yang dihaluskan → luas permukaan makin besar → peluang tumbukan efektif meningkat.
+</p>
+
+**4. ⚗ Katalis**  
+<p style='text-align: justify; text-indent: 40px;'>
+Zat yang mempercepat atau memperlambat reaksi tanpa ikut bereaksi permanen.  
+- <strong>Katalis positif</strong> mempercepat reaksi  
+- <strong>Inhibitor</strong> (katalis negatif) memperlambat reaksi  
+<em>Katalis bekerja dengan menurunkan energi aktivasi.</em>
+</p>
+
+**5. 💨 Tekanan (Khusus Gas)**  
+<p style='text-align: justify; text-indent: 40px;'>
+Tekanan tinggi → molekul gas lebih rapat → tumbukan meningkat → laju reaksi meningkat.
+</p>
 """, unsafe_allow_html=True)
+
