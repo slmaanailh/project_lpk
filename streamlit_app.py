@@ -277,11 +277,11 @@ Laju menyatakan seberapa cepat atau seberapa lambat suatu proses berlangsung. La
 </p>
 
 <p style='text-align: justify; text-indent: 40px;'>Dengan persamaan:</p>
+""", unsafe_allow_html=True)
 
-<p style='text-align: center; font-size: 18px;'>
-<strong>$$v = k[A]^x[B]^y$$</strong>
-</p>
+    st.latex(r"v = k[A]^x[B]^y")
 
+    st.markdown(r"""
 <p style='text-align: justify; text-indent: 40px;'>Di mana:</p>
 <ul style='margin-left: 60px; text-align: justify;'>
     <li><strong>(v)</strong> = laju reaksi</li>
