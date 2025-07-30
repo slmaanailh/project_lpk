@@ -240,24 +240,24 @@ elif page == "🧮Penentuan Orde":
 # ================================
 # 📘 TENTANG
 # ================================
-elif page == "📘Tentang":
-    st.title("📘Tentang Kinetika Reaksi")
+if page == "📘Tentang":
+    st.title("📘 Tentang Kinetika Reaksi")
 
     tab1, tab2 = st.tabs(["Tentang Website", "Dasar Teori"])
 
     with tab1:
         st.subheader("Tentang Website")
         st.markdown("""
-Aplikasi ini dikembangkan untuk membantu mahasiswa dan pelajar dalam memahami *kinetika reaksi* melalui pendekatan data eksperimen.  
+Aplikasi ini dikembangkan untuk membantu mahasiswa dan pelajar dalam memahami **kinetika reaksi** melalui pendekatan data eksperimen.  
 Fitur yang tersedia antara lain:
 - Analisis regresi untuk menentukan orde reaksi
 - Penentuan orde reaksi berdasarkan data laju
 - Perhitungan waktu paruh dan waktu kadaluarsa
 - Visualisasi grafik transformasi konsentrasi
 
-Website ini dibuat dengan *Streamlit*, menggunakan pustaka Python seperti numpy, pandas, matplotlib, dan scikit-learn.
+Website ini dibuat dengan **Streamlit**, menggunakan pustaka Python seperti `numpy`, `pandas`, `matplotlib`, dan `scikit-learn`.
 
-*Website Ini Dikembangkan Oleh Kelompok 4 (1B)*
+**Website Ini Dikembangkan Oleh Kelompok 4 (1B)**
 1. Affan Fakhri Izzudin
 2. Dhirga Fayzul Haq
 3. Laudya Calista Ardelia Ramadhani
@@ -265,76 +265,73 @@ Website ini dibuat dengan *Streamlit*, menggunakan pustaka Python seperti numpy,
 5. Salma Nailah Putri
 """)
 
-    
     with tab2:
-        st.markdown("""
-        <div style='text-align: justify; font-family: Arial, sans-serif; color: #2C3E50; line-height: 1.6;'>
+        st.header("🔬 Dasar Teori Kinetika Reaksi")
+        st.markdown(r"""
+<p style='text-align: justify; text-indent: 40px;'>
+Kinetika reaksi adalah cabang ilmu kimia yang mempelajari suatu reaksi kimia. Kinetika reaksi menerangkan dua hal, yaitu <strong>mekanisme reaksi</strong> dan <strong>laju reaksi</strong>. Mekanisme reaksi menjelaskan langkah-langkah perubahan reaktan menjadi produk. Sementara itu, laju reaksi adalah perubahan konsentrasi pereaksi atau produk dalam satu satuan waktu.
+</p>
 
-        <h2 style='color: #2C3E50;'>🔬 Dasar Teori Kinetika Reaksi</h2>
+<p style='text-align: justify; text-indent: 40px;'>
+Seiring waktu, jumlah pereaksi semakin sedikit, sedangkan jumlah produk bertambah. Laju reaksi dapat dinyatakan sebagai:
+</p>
 
-        <p style='text-indent: 30px;'>
-        Kinetika reaksi merupakan cabang ilmu kimia yang mempelajari <strong>mekanisme reaksi</strong> dan <strong>laju reaksi</strong>.
-        Mekanisme reaksi menjelaskan tahapan-tahapan perubahan dari reaktan menjadi produk, sedangkan laju reaksi menunjukkan perubahan konsentrasi terhadap waktu.
-        </p>
+<blockquote style='margin-left: 40px; font-style: italic;'>
+Laju = perubahan konsentrasi per satuan waktu
+</blockquote>
 
-        <p style='text-indent: 30px;'>
-        Selama reaksi berlangsung, konsentrasi reaktan akan berkurang dan konsentrasi produk akan bertambah. Oleh karena itu, laju reaksi dapat dinyatakan sebagai:
-        </p>
+---
 
-        <blockquote style="background-color: #f8f9fa; padding: 10px; border-left: 4px solid #3498db; text-indent: 0;">
-            Laju berkurangnya reaktan atau laju terbentuknya produk.
-        </blockquote>
+### 📈 Persamaan Laju Reaksi
 
-        <h4>📈 Persamaan Umum Laju Reaksi:</h4>
-        <p style="text-align: center; font-size: 22px;">
-            <em>v = k[A]<sup>x</sup>[B]<sup>y</sup></em>
-        </p>
+\[
+v = k[A]^x[B]^y
+\]
 
-        <p style='text-indent: 30px;'>
-        Keterangan:
-        </p>
-        <ul style='margin-left: 30px;'>
-            <li><b>v</b> = laju reaksi</li>
-            <li><b>k</b> = konstanta laju reaksi</li>
-            <li><b>[A], [B]</b> = konsentrasi reaktan</li>
-            <li><b>x, y</b> = orde reaksi terhadap A dan B</li>
-        </ul>
+**Keterangan:**
+- \( v \) = laju reaksi  
+- \( k \) = konstanta laju  
+- \( [A], [B] \) = konsentrasi reaktan  
+- \( x, y \) = orde reaksi terhadap A dan B  
 
-        <p style='text-indent: 30px;'>
-        Jumlah eksponen <em>x + y</em> disebut <strong>orde total reaksi</strong> yang menyatakan pengaruh konsentrasi terhadap laju reaksi.
-        </p>
+<p style='text-align: justify; text-indent: 40px;'>
+Jumlah eksponen \( x + y \) disebut <strong>orde total reaksi</strong>, yang menunjukkan seberapa besar pengaruh konsentrasi terhadap laju reaksi.
+</p>
 
-        <hr style="border-top: 1px solid #ccc;" />
+---
 
-        <h3 style="color: #34495e;">⚙ Faktor yang Mempengaruhi Laju Reaksi</h3>
+### ⚙️ Faktor-faktor yang Mempengaruhi Laju Reaksi
 
-        <ol style='margin-left: 15px;'>
-            <li><p style='text-indent: 30px;'>
-                <strong>📌 Konsentrasi:</strong> Semakin tinggi konsentrasi reaktan, semakin sering terjadi tumbukan antar partikel, sehingga mempercepat reaksi.
-            </p></li>
+<p style='text-align: justify; text-indent: 40px;'>
+Laju reaksi dipengaruhi oleh beberapa faktor berikut:
+</p>
 
-            <li><p style='text-indent: 30px;'>
-                <strong>🌡 Suhu:</strong> Peningkatan suhu menyebabkan partikel memiliki energi kinetik yang lebih besar, sehingga tumbukan menjadi lebih sering dan efektif.
-                <br><em style="margin-left:30px;">Setiap kenaikan suhu 10°C dapat melipatgandakan laju reaksi.</em>
-            </p></li>
+**1. 📌 Konsentrasi**  
+<p style='text-align: justify; text-indent: 40px;'>
+Semakin tinggi konsentrasi reaktan → lebih banyak partikel → lebih sering tumbukan → reaksi lebih cepat.
+</p>
 
-            <li><p style='text-indent: 30px;'>
-                <strong>📐 Luas Permukaan:</strong> Partikel padatan yang lebih halus memiliki permukaan lebih luas → memperbesar peluang tumbukan antar partikel → mempercepat laju reaksi.
-            </p></li>
+**2. 🌡 Suhu**  
+<p style='text-align: justify; text-indent: 40px;'>
+Suhu tinggi → energi kinetik meningkat → tumbukan lebih sering dan efektif.  
+<em>Laju reaksi bisa meningkat 2× setiap kenaikan suhu 10°C.</em>
+</p>
 
-            <li><p style='text-indent: 30px;'>
-                <strong>⚗ Katalis:</strong> Zat yang mempercepat atau memperlambat reaksi tanpa ikut bereaksi secara permanen.
-                <ul style='margin-left: 20px;'>
-                    <li><strong>Katalis positif</strong>: mempercepat reaksi</li>
-                    <li><strong>Inhibitor (katalis negatif)</strong>: memperlambat reaksi</li>
-                </ul>
-                <p style='text-indent: 30px;'>Katalis bekerja dengan menurunkan energi aktivasi reaksi.</p>
-            </p></li>
+**3. 📐 Luas Permukaan**  
+<p style='text-align: justify; text-indent: 40px;'>
+Padatan yang dihaluskan → luas permukaan makin besar → peluang tumbukan efektif meningkat.
+</p>
 
-            <li><p style='text-indent: 30px;'>
-                <strong>💨 Tekanan (untuk gas):</strong> Pada reaksi gas, tekanan tinggi memperkecil volume, membuat molekul lebih rapat, dan meningkatkan frekuensi tumbukan efektif.
-            </p></li>
-        </ol>
+**4. ⚗ Katalis**  
+<p style='text-align: justify; text-indent: 40px;'>
+Zat yang mempercepat atau memperlambat reaksi tanpa ikut bereaksi permanen.  
+- <strong>Katalis positif</strong> mempercepat reaksi  
+- <strong>Inhibitor</strong> (katalis negatif) memperlambat reaksi  
+<em>Katalis bekerja dengan menurunkan energi aktivasi.</em>
+</p>
 
-        </div>
-        """, unsafe_allow_html=True)
+**5. 💨 Tekanan (Khusus Gas)**  
+<p style='text-align: justify; text-indent: 40px;'>
+Tekanan tinggi → molekul gas lebih rapat → tumbukan meningkat → laju reaksi meningkat.
+</p>
+""", unsafe_allow_html=True)
